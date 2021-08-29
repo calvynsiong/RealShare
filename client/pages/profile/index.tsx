@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Layout from '../../components/layouts/Layout';
+import MainLayout from '../../components/layouts/MainLayout';
 
 const Profile = () => (
   <div className='p-4'>

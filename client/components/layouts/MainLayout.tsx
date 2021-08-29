@@ -7,7 +7,10 @@ type Props = {
   children?: ReactNode;
 };
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
+const MainLayout = ({
+  children,
+  title = 'This is the default title',
+}: Props) => (
   <>
     <div className='p-4'>
       {children}
@@ -16,4 +19,4 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
   </>
 );
 
-export default Layout;
+export default MainLayout;
