@@ -8,7 +8,12 @@ type Props = {
 };
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => (
-  <div className='p-4'>Hello World</div>
+  <>
+    <div className='p-4'>
+      {children}
+      Hello World
+    </div>
+  </>
 );
 
 export default Layout;
