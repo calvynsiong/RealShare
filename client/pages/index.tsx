@@ -1,15 +1,16 @@
 import Link from 'next/link';
+import { ReactElement } from 'react';
 import MainLayout from '../components/layouts/MainLayout';
+import SecondaryLayout from '../components/layouts/SecondaryLayout';
 
-const IndexPage = () => (
-  <MainLayout title='Home | Next.js + TypeScript Example'>
-    <h1>Hello Next.js 👋</h1>
+const Home = () => (
+  <>
     <p>
       <Link href='/about'>
         <a>About</a>
       </Link>
     </p>
-  </MainLayout>
+  </>
 );
 
-export default IndexPage;
+export default Home;
