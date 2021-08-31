@@ -2,7 +2,7 @@ import Head from 'next/head';
 import React, { ChangeEvent, Fragment, SyntheticEvent, useState } from 'react';
 // components
 import Image from 'next/image';
-import LogoSVG from '../../.next/static/images/54.svg';
+import LogoSVG from '../../public/images/54.svg';
 import LoginForm from '../../components/login/LoginForm';
 
 const Login = () => {

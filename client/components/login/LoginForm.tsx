@@ -19,6 +19,21 @@ const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState(initialState);
   const { username, password, email } = loginInfo;
 
+  const textFields = [
+    { field: username, name: 'username', placeholder: 'Enter your username' },
+    {
+      field: email,
+      name: 'email',
+      type: 'email',
+      placeholder: 'Enter your email address',
+    },
+    {
+      field: password,
+      name: 'password',
+      placeholder: 'Enter your password',
+      type: 'password',
+    },
+  ];
   const handleTextField = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const newData: ILoginInfo = {
       ...loginInfo,
@@ -27,16 +42,6 @@ const LoginForm = () => {
     setLoginInfo(newData);
   };
 
-  const textFields = [
-    { field: username, name: 'username', placeholder: 'Enter your username' },
-    { field: email, name: 'email', placeholder: 'Enter your email address' },
-    {
-      field: password,
-      name: 'password',
-      placeholder: 'Enter your password',
-      type: 'password',
-    },
-  ];
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
   };
@@ -54,7 +59,9 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit}>
           {textFields.map(({ field, name, placeholder, type }, index) => (
             <>
-              <label htmlFor={name}>{capitalize(name)}</label>
+              <label htmlFor={name} key={index}>
+                {capitalize(name)}
+              </label>
               <input
                 key={index}
                 type={type ?? 'text'}

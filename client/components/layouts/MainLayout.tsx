@@ -1,22 +1,19 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 type Props = {
   title?: string;
   children?: ReactNode;
 };
 
-const MainLayout = ({
-  children,
-  title = 'This is the default title',
-}: Props) => (
+const MainLayout = ({ children }: Props) => (
   <>
-    <div className='p-4'>
-      {children}
-      {title}
-      Layout Layout Layout
-    </div>
+    <Navbar />
+    {children}
+    <Footer></Footer>
   </>
 );
 

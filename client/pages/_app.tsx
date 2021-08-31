@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const queryClient = new QueryClient();
 
   const Layout = Component.layout || MainLayout;
+  const getLayout = Component.getLayout || ((page: ReactNode) => page);
 
   return (
     <>
@@ -32,9 +33,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       </Head>
       <QueryClientProvider client={queryClient}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
         <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
       </QueryClientProvider>
     </>

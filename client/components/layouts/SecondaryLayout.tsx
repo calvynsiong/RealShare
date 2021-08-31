@@ -9,7 +9,7 @@ type Props = {
 
 const SecondaryLayout = ({
   children,
-  title = 'This is the default title',
+  title = 'This is the default secondary title',
 }: Props) => (
   <>
     <div className='p-4'>
