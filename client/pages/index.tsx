@@ -1,16 +1,19 @@
 import Link from 'next/link';
-import { ReactElement, ReactNode } from 'react';
-import MainLayout from '../components/layouts/MainLayout';
-import SecondaryLayout from '../components/layouts/SecondaryLayout';
+import React, { ReactElement, ReactNode } from 'react';
+import styled from 'styled-components';
+// components
+import SideBar from '../components/layouts/Sidebar';
+import RightBar from '../components/layouts/RightBar';
+import Feed from '../components/feed/Feed';
 
-const Home = () => (
-  <>
-    <p>
-      <Link href='/about'>
-        <a>Main Page</a>
-      </Link>
-    </p>
-  </>
-);
+const Home = () => {
+  return (
+    <section className='w-full flex sticky'>
+      <SideBar></SideBar>
+      <Feed></Feed>
+      {/* <RightBar></RightBar> */}
+    </section>
+  );
+};
 
 export default Home;

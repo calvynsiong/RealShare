@@ -4,17 +4,17 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import { Search, Person, Notifications } from '@material-ui/icons';
 
-const Section = styled.nav`
-  backdrop-filter: blur(3px) saturate(93%);
-  -webkit-backdrop-filter: blur(3px) saturate(93%);
-  background-color: rgba(64, 94, 143, 0.39);
-  border: 1px solid rgba(255, 255, 255, 0.125);
-`;
 const Logo = styled.div`
   flex: 2;
 `;
+const Section = styled.nav`
+  backdrop-filter: blur(22px) saturate(107%);
+  -webkit-backdrop-filter: blur(22px) saturate(107%);
+  background-color: rgba(160, 182, 223, 0.19);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+`;
 const CenterBar = styled.div`
-  flex: 5;
+  flex: 7;
 `;
 const SearchBar = styled.div``;
 const RightBar = styled.div`
@@ -47,12 +47,12 @@ const IconList = [
 
 const Navbar = () => {
   return (
-    <Section className='h-[5em] w-full flex items-center sticky top-0'>
-      <Logo className='ml-[2em] text-[2em] cursor-pointer'>
+    <Section className=' flex items-center sticky top-0 h-[5em] z-[999] w-screen'>
+      <Logo className='hidden sm:flex  ml-[2em] text-[2em] cursor-pointer'>
         <span className='font-bold'>RealShare</span>
       </Logo>
       <CenterBar>
-        <SearchBar className='z-50 bg-white rounded-full p-2 m-2 flex text-black'>
+        <SearchBar className='z-50 bg-white rounded-full p-2 ml-8 sm:m-2  flex text-black'>
           <Search></Search>
           <input
             type='text'
@@ -62,7 +62,7 @@ const Navbar = () => {
         </SearchBar>
       </CenterBar>
       <RightBar className='flex z-50 items-center justify-between mx-8'>
-        <NavLinks className='flex gap-4 font-semibold text-lg'>
+        <NavLinks className='hidden sm:flex gap-4 font-semibold text-lg'>
           <span className='cursor-pointer'>Home</span>
           <span className='cursor-pointer'>Feed</span>
         </NavLinks>
