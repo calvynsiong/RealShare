@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 // components
 import { PermMedia, Label, Room } from '@material-ui/icons';
+import Select from 'react-select';
+import TagSelectBar from './TagSelectBar';
 
 const UploadContainer = styled.div``;
 const UploadWrapper = styled.div`
@@ -68,6 +70,65 @@ const Options = [
 ];
 
 const UploadBar = () => {
+  const [optionalTags, setOptionalTags] = useState({ tags: [], location: [] });
+  const { tags, location } = optionalTags;
+  const changeField = (
+    e: React.SyntheticEvent,
+    custom: string,
+    customValues: any[]
+  ) => {
+    const target = e.target as typeof e.target & {
+      name: string;
+      value: any;
+    };
+    if (custom) {
+      setOptionalTags({ ...optionalTags, [custom]: customValues });
+    } else {
+      optionalTags;
+      setOptionalTags({
+        ...optionalTags,
+        [target.name]: target.value!,
+      });
+    }
+  };
+
+  const [tagInput, setTagInput] = useState('');
+
+  const addTags = (e: React.SyntheticEvent) => {
+    if (!tagInput) return;
+    const event = e as typeof e & {
+      key: string;
+    };
+
+    switch (event.key) {
+      case 'Enter':
+      case 'Tab':
+        changeField(e, 'tags', [...tags, tagInput]);
+        setTagInput('');
+        e.preventDefault();
+        break;
+      default:
+        break;
+    }
+  };
+  const handleInputChange = (value: string) => {
+    setTagInput(value);
+  };
+  const onChangeTags = (selectedOption: any) => {
+    let changedData = selectedOption
+      ? selectedOption?.map?.((item: any) => item.value)
+      : [];
+    changeField(selectedOption, 'tags', [...changedData]);
+  };
+
+  const tagProps = {
+    tags,
+    handleInputChange,
+    addTags,
+    tagInput,
+    onChangeTags,
+    name: 'tags',
+  };
   return (
     <UploadContainer className='flex rounded-xl w-full mx-auto mt-4 md:w-3/4'>
       <UploadWrapper className='h-full flex-1 w-full mx-12 my-4 p-4 flex flex-col'>
@@ -79,6 +140,8 @@ const UploadBar = () => {
           />
           <InputText
             placeholder='Type a caption or something here!'
+            aria-label='Post Description'
+            name='description'
             rows={5}
             className='w-3/4 m-4 mt-0 focus:outline-none'
           ></InputText>
@@ -97,6 +160,10 @@ const UploadBar = () => {
             ))}
           </UploadOptions>
         </div>
+        <p className='my-2'>Tags</p>
+        <TagSelectBar isMulti={true} {...tagProps}></TagSelectBar>
+        <p className='mb-2'>Location</p>
+        <TagSelectBar {...tagProps}></TagSelectBar>
         <UploadButton className='mx-auto'>Upload</UploadButton>
       </UploadWrapper>
     </UploadContainer>
