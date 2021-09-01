@@ -10,6 +10,10 @@ const PostContainer = styled.article``;
 const PostWrapper = styled.div``;
 
 const Post = () => {
+  // const handleLikePost = () => {
+
+  // }
+
   return (
     <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12'>
       <PostWrapper>

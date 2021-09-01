@@ -12,6 +12,7 @@ type Props = {
 const MainLayout = ({ children }: Props) => (
   <>
     <Navbar />
+
     {children}
     <Footer></Footer>
   </>

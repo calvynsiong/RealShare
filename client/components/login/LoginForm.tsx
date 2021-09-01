@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import Link from 'next/link';
+import React, { ChangeEvent, Fragment, useState } from 'react';
 // components
 
 import { capitalize } from '../../utils/functions';
@@ -22,19 +23,13 @@ const LoginForm = () => {
   const textFields = [
     { field: username, name: 'username', placeholder: 'Enter your username' },
     {
-      field: email,
-      name: 'email',
-      type: 'email',
-      placeholder: 'Enter your email address',
-    },
-    {
       field: password,
       name: 'password',
       placeholder: 'Enter your password',
       type: 'password',
     },
   ];
-  const handleTextField = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleTextField = (e: ChangeEvent<HTMLInputElement>): void => {
     const newData: ILoginInfo = {
       ...loginInfo,
       [e.target.name]: e.target.value,
@@ -58,12 +53,9 @@ const LoginForm = () => {
         </h6>
         <form onSubmit={handleSubmit}>
           {textFields.map(({ field, name, placeholder, type }, index) => (
-            <>
-              <label htmlFor={name} key={index}>
-                {capitalize(name)}
-              </label>
+            <Fragment key={index}>
+              <label htmlFor={name}>{capitalize(name)}</label>
               <input
-                key={index}
                 type={type ?? 'text'}
                 placeholder={placeholder}
                 aria-label='Enter your email address'
@@ -72,7 +64,7 @@ const LoginForm = () => {
                 name={name}
                 onChange={(e) => handleTextField(e)}
               />
-            </>
+            </Fragment>
           ))}
           <button
             disabled={false}
@@ -90,6 +82,9 @@ const LoginForm = () => {
           >
             Don't have an account yet? Sign up!
           </button>
+          <Link href='/'>
+            <p className='text-center text-[#1775ee] mt-2'>Forgot password?</p>
+          </Link>
         </form>
       </div>
     </article>

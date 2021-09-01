@@ -17,6 +17,7 @@ const CreateComment = () => {
           name='add-comment'
           placeholder='Comment...'
           value={''}
+          onChange={() => {}}
         />
         <button
           className={`text-sm font-bold text-blue-medium ${

@@ -14,16 +14,16 @@ const PostTop = () => {
         <div className='flex justify-center items-center mr-8'>
           <img
             className='rounded-full h-8 w-8 flex mr-3'
-            src='https://avatars.dicebear.com/api/gridy/:seed.svg'
+            src='https://avatars.dicebear.com/api/gridy/:a.svg'
             alt={`profile picture`}
           />
           <p className='font-bold m-0 text-2xl'>{`Calvyn`}</p>
         </div>
       </Link>
-      <LocationBadge className='inline-block bg-yellow-600 rounded-xl  text-black  p-3  font-bold mr-3'>
+      <LocationBadge className='inline-block bg-yellow-600 rounded-xl  text-black  p-2  font-bold mr-3'>
         Default
       </LocationBadge>
-      <TagsBadge className='inline-block rounded-xl   text-white  p-3  bg-indigo-500 font-bold mr-3'>
+      <TagsBadge className='inline-block rounded-xl   text-white  p-2  bg-indigo-500 font-bold mr-3'>
         Default
       </TagsBadge>
     </Header>

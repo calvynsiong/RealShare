@@ -41,19 +41,33 @@ const Sidebar = () => {
         </SidebarLinks>
         <Divider className='my-[20px]'></Divider>
         <FriendsList className='flex flex-col overflow-y-scroll'>
-          {Array.from({ length: 100 }).map((_, index) => (
-            <Friend
-              key={index}
-              className='flex bg-white gap-3 w-[calc(100%-2rem)] m-4 mt-0 rounded-md p-3'
-            >
+          <span className='text-xl font-semibold  mb-8 ml-4 '>
+            Friends List (0)
+          </span>
+          {false ? (
+            Array.from({ length: 100 }).map((_, index) => (
+              <Friend
+                key={index}
+                className='flex bg-white gap-3 w-[calc(100%-2rem)] m-4 mt-0 rounded-md p-3'
+              >
+                <img
+                  src='https://avatars.dicebear.com/api/gridy/:seed.svg'
+                  alt='friend image'
+                  className='object-cover w-[2em] h-[2em] rounded-full mr-4'
+                ></img>
+                <span>Calvyn</span>
+              </Friend>
+            ))
+          ) : (
+            <Friend className='flex bg-white gap-3 w-[calc(100%-2rem)] m-4 mt-0 rounded-md p-3'>
               <img
-                src='https://avatars.dicebear.com/api/gridy/:seed.svg'
+                src='https://avatars.dicebear.com/api/gridy/:seed.svg?mood[]=sad'
                 alt='friend image'
                 className='object-cover w-[2em] h-[2em] rounded-full mr-4'
               ></img>
-              <span>Calvyn</span>
+              <span>No friends yet</span>
             </Friend>
-          ))}
+          )}
         </FriendsList>
       </SidebarContainer>
     </section>

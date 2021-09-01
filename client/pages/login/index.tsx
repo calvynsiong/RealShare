@@ -4,6 +4,7 @@ import React, { ChangeEvent, Fragment, SyntheticEvent, useState } from 'react';
 import Image from 'next/image';
 import LogoSVG from '../../public/images/54.svg';
 import LoginForm from '../../components/login/LoginForm';
+import SignUpLayout from '../../components/layouts/SignUpLayout';
 
 const Login = () => {
   return (
@@ -15,14 +16,9 @@ const Login = () => {
           content='width=device-width, initial-scale=1, maximum-scale=1'
         />
       </Head>
-      <section className='container flex  flex-wrap md:flex-nowrap mx-auto items-center justify-center h-screen'>
-        <div className='flex w-2/5 p-4'>
-          <Image src={LogoSVG} alt='RealShare SVG' />
-        </div>
-        {/* width is 3/5 */}
-        <LoginForm></LoginForm>
-        {/* <Image src='' alt='login image'></Image> */}
-      </section>
+      <SignUpLayout>
+        <LoginForm />
+      </SignUpLayout>
     </>
   );
 };

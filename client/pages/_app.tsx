@@ -1,10 +1,13 @@
 // styles
 import '../styles/index.css';
 // libraries
-import React, { ReactElement, ReactNode, ComponentType } from 'react';
+import React, { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Head from 'next/head';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // layouts
 import MainLayout from '../components/layouts/MainLayout';
 // types
@@ -33,7 +36,8 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       </Head>
       <QueryClientProvider client={queryClient}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
+        <ToastContainer></ToastContainer>;
+        <Layout> {getLayout(<Component {...pageProps} />)}</Layout>
         <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
       </QueryClientProvider>
     </>
