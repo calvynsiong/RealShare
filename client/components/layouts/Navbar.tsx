@@ -64,7 +64,6 @@ const Navbar = () => {
       <RightBar className='flex z-50 items-center justify-between mx-8'>
         <NavLinks className='hidden sm:flex gap-4 font-semibold text-lg'>
           <span className='cursor-pointer'>Home</span>
-          <span className='cursor-pointer'>Feed</span>
         </NavLinks>
         <NavIcons className='flex justify-around gap-4'>
           {IconList.map((icon, index) => (
