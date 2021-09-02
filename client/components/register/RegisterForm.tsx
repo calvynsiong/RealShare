@@ -90,7 +90,8 @@ const RegisterForm = () => {
     }
   };
 
-  const buttonClass = `text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base`;
+  const buttonClass =
+    'text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base';
 
   const invalid = !(
     username &&
