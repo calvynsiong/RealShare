@@ -1,5 +1,6 @@
 const express = require('express');
-const app = express();
+const next = require('next');
+// const app = express();
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
@@ -11,40 +12,68 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 
 dotenv.config({ path: './config/config.env' });
+const dev = process.env.NODE_ENV !== 'production';
+
 const PORT = process.env.PORT || 5000;
+// Init app
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-// Enable CORS
-app.use(cors());
-// logging
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+app
+  .prepare()
+  .then(() => {
+    const server = express();
+    // Enable CORS
+    server.use(cors());
+    // logging
+    if (process.env.NODE_ENV === 'development') {
+      server.use(morgan('dev'));
+    }
 
-app.use(express.json());
-// Sanitize
-app.use(mongoSanitize());
+    server.use(express.json());
+    // Sanitize
+    server.use(mongoSanitize());
 
-// Prevent XSS attacks
-app.use(xss());
-// Set security headers
-app.use(helmet());
+    // Prevent XSS attacks
+    server.use(xss());
+    // Set security headers
+    server.use(helmet());
 
-// Rate limit against DDOS attacks
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-});
-app.use(limiter);
+    // Rate limit against DDOS attacks
+    const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100,
+    });
+    server.use(limiter);
 
-// Prevent http param pollution
-app.use(hpp());
+    // Prevent http param pollution
+    server.use(hpp());
 
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
-// ! Creating routes
+    // Set static folder
+    console.log(dirname);
+    const staticPath = path.join(__dirname, '../static');
+    server.use(
+      '/static',
+      express.static(staticPath, {
+        maxAge: '30d',
+        immutable: true,
+      })
+    );
+    server.get('*', (req, res) => {
+      return handle(req, res);
+    });
 
-app.listen(PORT, () => {
-  console.log(
-    `Backend server is in ${process.env.NODE_ENV} environment and running on ${PORT}`
-  );
-});
+    // ! Creating routes
+    server.use(`/api/v1/user`, require('./routes/userR'));
+
+    server.listen(PORT, (err) => {
+      if (err) throw err;
+      console.log(
+        `Backend server is in ${process.env.NODE_ENV} environment and running on ${PORT} ${__dirname}`
+      );
+    });
+  })
+  .catch((err) => {
+    console.error(err.stack);
+    process.exit(1);
+  });
