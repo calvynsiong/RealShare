@@ -1,11 +1,17 @@
-exports.responseHandler = (input, res) => {
+const responseHandler = (input, res) => {
+  console.log(input);
+  console.log(input);
+  console.log(input);
+  console.log(input);
+  console.log(input);
+  console.log(input);
   let { statusCode, msg, isSuccessful, payload } = input;
-
   const handleStatusCode = () => {
     if (statusCode === 200 || statusCode === 201) {
       isSuccessful = true;
     } else {
       isSuccessful = false;
+      statusCode = 404;
     }
   };
 
@@ -19,3 +25,5 @@ exports.responseHandler = (input, res) => {
     message: msg || 'Success',
   });
 };
+
+module.exports = responseHandler;

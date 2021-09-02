@@ -5,6 +5,6 @@ const router = express.Router();
 const { registerUser } = require('../controller/authC');
 
 // register
-router.route('/register').post();
+router.route('/register').post(registerUser);
 
 module.exports = router;
