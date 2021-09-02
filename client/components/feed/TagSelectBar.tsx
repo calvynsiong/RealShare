@@ -13,17 +13,10 @@ interface TagSelectBarProps {
   isMulti?: boolean;
   name: string;
   tags: tagProps[];
-  handleInputChange: (newValue: string, actionMeta: InputActionMeta) => void;
-  addTags: (e: React.KeyboardEvent<HTMLElement>) => void;
+  handleInputChange: (value: string, type: string) => void;
+  addTags: (e: React.KeyboardEvent<HTMLElement>, type: string) => void;
   tagInput: string;
-  onChangeTags:
-    | ((
-        value:
-          | { value: tagProps; label: tagProps }
-          | OptionsType<{ value: tagProps; label: tagProps }>
-          | null
-      ) => void)
-    | undefined;
+  onChangeTags: (selectedOption: any, type: string) => void;
 }
 
 const TagSelectBar = ({
@@ -43,13 +36,13 @@ const TagSelectBar = ({
       components={{ DropdownIndicator: null }}
       className='basic-single mb-3 border rounded'
       classNamePrefix='react-select'
-      id='tags'
+      id={name}
       value={tags?.map?.((tag) => {
         return { value: tag, label: tag };
       })}
-      onKeyDown={(e) => addTags(e)}
-      onInputChange={handleInputChange}
-      onChange={onChangeTags}
+      onKeyDown={(e) => addTags(e, name)}
+      onInputChange={(e) => handleInputChange(e, name)}
+      onChange={(e) => onChangeTags(e, name)}
       inputValue={tagInput}
     />
   );

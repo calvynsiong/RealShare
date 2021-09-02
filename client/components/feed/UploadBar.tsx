@@ -54,29 +54,46 @@ const UploadButton = styled.button`
   cursor: pointer;
   color: white;
 `;
-const Options = [
-  {
-    icon: <PermMedia htmlColor='blue' />,
-    label: 'Upload from device',
-  },
-  {
-    icon: <Label />,
-    label: 'Tags',
-  },
-  {
-    icon: <Room htmlColor='green' />,
-    label: 'Location',
-  },
-];
 
 const UploadBar = () => {
+  // Both tags + location tag
   const [optionalTags, setOptionalTags] = useState({ tags: [], location: [] });
   const { tags, location } = optionalTags;
+  const [showTags, setShowTags] = useState<boolean>(false);
+  const [showLocation, setShowLocation] = useState<boolean>(false);
+  const Options = [
+    {
+      icon: <PermMedia htmlColor='blue' />,
+      label: 'Upload from device',
+    },
+    {
+      icon: (
+        <Label
+          className='cursor-pointer'
+          onClick={() => setShowTags((prev) => !prev)}
+        />
+      ),
+      label: 'Tags',
+    },
+    {
+      icon: (
+        <Room
+          className='cursor-pointer'
+          onClick={() => setShowLocation((prev) => !prev)}
+          htmlColor='green'
+        />
+      ),
+      label: 'Location',
+    },
+  ];
+
+  // helper function to change field
   const changeField = (
     e: React.SyntheticEvent,
     custom: string,
     customValues: any[]
   ) => {
+    if (!e) return;
     const target = e.target as typeof e.target & {
       name: string;
       value: any;
@@ -93,9 +110,25 @@ const UploadBar = () => {
   };
 
   const [tagInput, setTagInput] = useState('');
+  const [locationInput, setLocationInput] = useState('');
 
-  const addTags = (e: React.SyntheticEvent) => {
-    if (!tagInput) return;
+  // Changes current value for "future" tag
+  const handleInputChange = (value: string, type: string) => {
+    switch (type) {
+      case 'tags':
+        setTagInput(value);
+        break;
+      case 'location':
+        setLocationInput(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Converts "future" tag to proper tag + adds it to tag list
+  const addTags = (e: React.SyntheticEvent, type: string) => {
+    if (!e) return;
     const event = e as typeof e & {
       key: string;
     };
@@ -103,24 +136,29 @@ const UploadBar = () => {
     switch (event.key) {
       case 'Enter':
       case 'Tab':
-        changeField(e, 'tags', [...tags, tagInput]);
-        setTagInput('');
+        if (type === 'tags' && tagInput) {
+          changeField(e, 'tags', [...tags, tagInput]);
+          setTagInput('');
+        }
+        if (type === 'location' && locationInput) {
+          changeField(e, 'location', [...location, locationInput]);
+          setLocationInput('');
+        }
         e.preventDefault();
         break;
       default:
         break;
     }
   };
-  const handleInputChange = (value: string) => {
-    setTagInput(value);
-  };
-  const onChangeTags = (selectedOption: any) => {
-    let changedData = selectedOption
+  // Handles clear out tags
+  const onChangeTags = (selectedOption: any, type: string) => {
+    const changedData = selectedOption
       ? selectedOption?.map?.((item: any) => item.value)
       : [];
-    changeField(selectedOption, 'tags', [...changedData]);
+    changeField(selectedOption, type, [...changedData]);
   };
 
+  // ! Props
   const tagProps = {
     tags,
     handleInputChange,
@@ -129,8 +167,17 @@ const UploadBar = () => {
     onChangeTags,
     name: 'tags',
   };
+
+  // overwritting tags, name and tagInput props for location instead
+  const locationProps = {
+    ...tagProps,
+    tags: location,
+    name: 'location',
+    tagInput: locationInput,
+  };
+
   return (
-    <UploadContainer className='flex rounded-xl w-full mx-auto mt-4 md:w-3/4'>
+    <UploadContainer className='flex rounded-xl w-full mx-auto mt-16 md:w-3/4'>
       <UploadWrapper className='h-full flex-1 w-full mx-12 my-4 p-4 flex flex-col'>
         <UploadPhoto className='w-full flex justify-center items-center gap-4 '>
           <ProfPic
@@ -160,10 +207,20 @@ const UploadBar = () => {
             ))}
           </UploadOptions>
         </div>
-        <p className='my-2'>Tags</p>
-        <TagSelectBar isMulti={true} {...tagProps}></TagSelectBar>
-        <p className='mb-2'>Location</p>
-        <TagSelectBar {...tagProps}></TagSelectBar>
+        <>
+          {showTags && (
+            <>
+              <p className='my-2'>Tags</p>
+              <TagSelectBar isMulti={true} {...tagProps}></TagSelectBar>
+            </>
+          )}
+          {showLocation && (
+            <>
+              <p className='mb-2'>Location</p>
+              <TagSelectBar isMulti={true} {...locationProps}></TagSelectBar>
+            </>
+          )}
+        </>
         <UploadButton className='mx-auto'>Upload</UploadButton>
       </UploadWrapper>
     </UploadContainer>
