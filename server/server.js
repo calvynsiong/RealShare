@@ -7,16 +7,18 @@ const rateLimit = require('express-rate-limit');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
+const errorHandler = require('./middleware/errorHandler');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
+const connectDB = require('./config/connectDB');
 
 dotenv.config({ path: './config/config.env' });
 const dev = process.env.NODE_ENV !== 'production';
 
 const PORT = process.env.PORT || 5000;
 // Init app
-const app = next({ dev });
+const app = next({ dir: '../client', dev });
 const handle = app.getRequestHandler();
 
 app
@@ -49,27 +51,20 @@ app
     // Prevent http param pollution
     server.use(hpp());
 
-    // Set static folder
-    console.log(dirname);
-    const staticPath = path.join(__dirname, '../static');
-    server.use(
-      '/static',
-      express.static(staticPath, {
-        maxAge: '30d',
-        immutable: true,
-      })
-    );
-    server.get('*', (req, res) => {
-      return handle(req, res);
-    });
-
+    server.use(errorHandler);
     // ! Creating routes
     server.use(`/api/v1/user`, require('./routes/userR'));
+    server.use(`/api/v1/auth`, require('./routes/authR'));
+    server.use(`/api/v1/post`, require('./routes/postR'));
 
+    server.all('*', (req, res) => {
+      return handle(req, res);
+    });
+    connectDB();
     server.listen(PORT, (err) => {
       if (err) throw err;
       console.log(
-        `Backend server is in ${process.env.NODE_ENV} environment and running on ${PORT} ${__dirname}`
+        `Backend server is in ${process.env.NODE_ENV} environment and running on ${PORT}`
       );
     });
   })
