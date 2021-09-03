@@ -38,8 +38,6 @@ const CommentsContainer = styled.div``;
 const SeeMore = styled.button``;
 const Hide = styled.button``;
 
-const buttonClass = 'text-gray-base mb-1 cursor-pointer';
-
 const Comments = () => {
   const [commentLimit, setCommentLimit] = useState<number>(5);
   return (
@@ -58,13 +56,16 @@ const Comments = () => {
           ))}
         <div className='flex flex-wrap justify-around px-4 my-4'>
           <SeeMore
-            className={buttonClass}
+            className='text-gray-base mb-1 cursor-pointer'
             onClick={() => setCommentLimit((pre) => pre + 3)}
           >
             View More Comments
           </SeeMore>
           {commentLimit > 3 && (
-            <Hide className={buttonClass} onClick={() => setCommentLimit(3)}>
+            <Hide
+              className='text-gray-base mb-1 cursor-pointer'
+              onClick={() => setCommentLimit(3)}
+            >
               Hide Comments
             </Hide>
           )}

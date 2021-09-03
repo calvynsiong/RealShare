@@ -6,12 +6,16 @@ import { Search, Person, Notifications } from '@material-ui/icons';
 
 const Logo = styled.div`
   flex: 2;
+  margin-left: 2em;
+  font-size: 2em;
 `;
 const Section = styled.nav`
   backdrop-filter: blur(22px) saturate(107%);
   -webkit-backdrop-filter: blur(22px) saturate(107%);
   background-color: rgba(160, 182, 223, 0.19);
   border: 1px solid rgba(255, 255, 255, 0.125);
+  height: 5em;
+  z-index: 999;
 `;
 const CenterBar = styled.div`
   flex: 7;
@@ -23,14 +27,19 @@ const RightBar = styled.div`
 const NavLinks = styled.div``;
 const NavIcons = styled.div``;
 const IconWrapper = styled.div``;
-const IconBadge = styled.span``;
+const IconBadge = styled.span`
+  width: 15px;
+  height: 15px;
+  top: -10px;
+  right: -10px;
+`;
 
 const IconList = [
   {
     children: (
       <>
         <Person fontSize='large'></Person>
-        <IconBadge className='absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]'>
+        <IconBadge className='absolute bg-red-600 rounded-full flex items-center justify-center p-3 '>
           1
         </IconBadge>
       </>
@@ -40,7 +49,7 @@ const IconList = [
     children: (
       <>
         <Notifications fontSize='large'></Notifications>
-        <IconBadge className='absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]'>
+        <IconBadge className='absolute bg-red-600 rounded-full  flex items-center justify-center p-3 '>
           2
         </IconBadge>
       </>
@@ -50,8 +59,8 @@ const IconList = [
 
 const Navbar = () => {
   return (
-    <Section className='flex items-center fixed top-0 h-[5em] z-[999] w-screen'>
-      <Logo className='hidden sm:flex  ml-[2em] text-[2em] cursor-pointer'>
+    <Section className='flex items-center fixed top-0  w-screen'>
+      <Logo className='hidden sm:flex   cursor-pointer'>
         <span className='font-bold'>RealShare</span>
       </Logo>
       <CenterBar>
@@ -76,7 +85,7 @@ const Navbar = () => {
           ))}
         </NavIcons>
         <img
-          className='h-[2em] rounded-full cursor-pointer'
+          className='h-8 rounded-full cursor-pointer'
           src='https://avatars.dicebear.com/api/gridy/:seed.svg'
           alt='avatar'
         ></img>

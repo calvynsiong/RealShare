@@ -3,7 +3,6 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 const Header = styled.div``;
-const HeaderWrapper = styled.div``;
 const LocationBadge = styled.span``;
 const TagsBadge = styled.span``;
 

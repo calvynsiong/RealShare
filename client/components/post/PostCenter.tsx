@@ -8,9 +8,6 @@ import InsertCommentIcon from '@material-ui/icons/InsertComment';
 const OptionsContainer = styled.article``;
 const OptionsWrapper = styled.article``;
 
-const iconClass = `w-8 mr-4 select-none cursor-pointer focus:outline-none
-            `;
-
 const PostCenter = () => {
   return (
     <>
@@ -22,13 +19,16 @@ const PostCenter = () => {
       <OptionsContainer className='flex justify-between p-4'>
         <OptionsWrapper className='flex'>
           {false ? (
-            <FavoriteBorderIcon className={iconClass}></FavoriteBorderIcon>
+            <FavoriteBorderIcon className='w-8 mr-4 select-none cursor-pointer focus:outline-none'></FavoriteBorderIcon>
           ) : (
-            <FavoriteIcon htmlColor='red' className={iconClass}></FavoriteIcon>
+            <FavoriteIcon
+              htmlColor='red'
+              className='w-8 mr-4 select-none cursor-pointer focus:outline-none'
+            ></FavoriteIcon>
           )}
           <InsertCommentIcon
             htmlColor='lightblue'
-            className={iconClass}
+            className='w-8 mr-4 select-none cursor-pointer focus:outline-none'
           ></InsertCommentIcon>
         </OptionsWrapper>
       </OptionsContainer>
