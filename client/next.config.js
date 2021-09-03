@@ -5,15 +5,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: require.resolve('babel-loader'),
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
         test: /\.png|svg|jpg|gif$/,
         use: ['file-loader'],
       },
