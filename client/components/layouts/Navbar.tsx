@@ -50,7 +50,7 @@ const IconList = [
 
 const Navbar = () => {
   return (
-    <Section className=' flex items-center fixed top-0 h-[5em] z-[999] w-screen'>
+    <Section className='flex items-center fixed top-0 h-[5em] z-[999] w-screen'>
       <Logo className='hidden sm:flex  ml-[2em] text-[2em] cursor-pointer'>
         <span className='font-bold'>RealShare</span>
       </Logo>
