@@ -1,10 +1,4 @@
 const responseHandler = (input, res) => {
-  console.log(input);
-  console.log(input);
-  console.log(input);
-  console.log(input);
-  console.log(input);
-  console.log(input);
   let { statusCode, msg, isSuccessful, payload } = input;
   const handleStatusCode = () => {
     if (statusCode === 200 || statusCode === 201) {

@@ -3,8 +3,6 @@ const UserM = require('../models/UserM');
 // utils
 const responseHandler = require('../utils/responseHandler');
 const asyncHandler = require('../utils/asyncHandler');
-const next = require('next');
-const app = next({ dir: '../../client/', dev: true });
 
 // !Route : POST /api/v1/auth/register
 // *Desc: register fake user

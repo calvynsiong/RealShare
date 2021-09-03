@@ -1,5 +1,4 @@
 const express = require('express');
-const next = require('next');
 // const app = express();
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
