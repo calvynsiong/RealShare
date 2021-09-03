@@ -25,13 +25,14 @@ const NavIcons = styled.div``;
 const IconWrapper = styled.div``;
 const IconBadge = styled.span``;
 
-const iconClass = `absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]`;
 const IconList = [
   {
     children: (
       <>
         <Person fontSize='large'></Person>
-        <IconBadge className={iconClass}>1</IconBadge>
+        <IconBadge className='absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]'>
+          1
+        </IconBadge>
       </>
     ),
   },
@@ -39,7 +40,9 @@ const IconList = [
     children: (
       <>
         <Notifications fontSize='large'></Notifications>
-        <IconBadge className={iconClass}>1</IconBadge>
+        <IconBadge className='absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]'>
+          1
+        </IconBadge>
       </>
     ),
   },

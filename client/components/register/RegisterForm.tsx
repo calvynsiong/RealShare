@@ -1,10 +1,17 @@
 import Link from 'next/link';
 import React, { ChangeEvent, Fragment, useState } from 'react';
+import styled from 'styled-components';
 // components
 
 import { capitalize } from '../../utils/functions';
 import { errorToast } from '../../utils/toasts';
 
+interface IButtonProps {
+  invalid: boolean;
+}
+const SignUpButton = styled.button<IButtonProps>`
+  opacity: ${(props) => (props.invalid ? '0.5' : '1')};
+`;
 const RegisterForm = () => {
   interface IRegisterInfo {
     username: string;
@@ -90,9 +97,6 @@ const RegisterForm = () => {
     }
   };
 
-  const buttonClass =
-    'text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base';
-
   const invalid = !(
     username &&
     password &&
@@ -100,6 +104,8 @@ const RegisterForm = () => {
     passwordConfirmed &&
     password === passwordConfirmed
   );
+  console.log(invalid);
+
   return (
     <article className='flex w-full md:w-3/5 flex-wrap m-4'>
       <div className='flex flex-col items-center bg-white p-8 border border-gray-primary m-4 rounded'>
@@ -124,21 +130,21 @@ const RegisterForm = () => {
               </Fragment>
             )
           )}
-          <button
+          <SignUpButton
+            invalid={invalid}
             disabled={false}
             type='submit'
-            className={`bg-blue-600 ${buttonClass}
-            ${invalid && 'opacity-50'}`}
+            className='bg-blue-600 text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base'
           >
             Sign up for a new account
-          </button>
+          </SignUpButton>
 
           <Link href='/login'>
             <button
               disabled={false}
               type='submit'
-              className={`bg-green-400 p-2  ${buttonClass}
-            `}
+              className='bg-green-400 p-2  text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base
+            '
             >
               Login to your account
             </button>
