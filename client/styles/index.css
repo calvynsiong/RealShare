@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 /* fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&family=Montserrat&family=Nunito&display=swap');
 
 html {
   font-size: 100%;
@@ -178,7 +178,8 @@ html {
 }
 
 body {
-  margin: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 main {
