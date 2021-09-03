@@ -10,8 +10,8 @@ const app = next({ dir: '../../client/', dev: true });
 // *Desc: register fake user
 exports.registerUser = asyncHandler(async (req, res, next) => {
   const user = new UserM({
-    username: 'aClvyn',
-    email: 'calvyn362@gmail.com',
+    username: 'aaClvyn',
+    email: 'calvyn364@gmail.com',
     password: 'password',
   });
   user.save();
@@ -19,5 +19,4 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     { statusCode: 200, payload: { user }, msg: 'Dummy User' },
     res
   );
-  return app.render(req, res, '/api/v1/auth/register');
 });
