@@ -41,7 +41,7 @@ const IconList = [
       <>
         <Notifications fontSize='large'></Notifications>
         <IconBadge className='absolute bg-red-600 rounded-full w-[15px] h-[15px] flex items-center justify-center p-3 top-[-10px] right-[-10px]'>
-          1
+          2
         </IconBadge>
       </>
     ),
