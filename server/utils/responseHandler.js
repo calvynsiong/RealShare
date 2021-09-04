@@ -17,6 +17,7 @@ const responseHandler = (input, res) => {
     success: isSuccessful, // required
     dataPayload: payload, // optional only if passed
     message: msg || 'Success',
+    statusCode,
   });
 };
 

@@ -14,7 +14,7 @@ const Section = styled.nav`
   -webkit-backdrop-filter: blur(22px) saturate(107%);
   background-color: rgba(160, 182, 223, 0.19);
   border: 1px solid rgba(255, 255, 255, 0.125);
-  height: 5em;
+  height: 80px;
   z-index: 999;
 `;
 const CenterBar = styled.div`

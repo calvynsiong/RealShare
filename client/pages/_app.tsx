@@ -1,7 +1,7 @@
 // styles
 import '../styles/index.css';
 // libraries
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Head from 'next/head';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -21,6 +21,9 @@ type MyAppProps<P = {}> = AppProps<P> & {
 
 function MyApp({ Component, pageProps }: MyAppProps) {
   const queryClient = new QueryClient();
+  useEffect(() => {
+    (document.querySelector('body') as HTMLElement).classList.add('m-0');
+  });
 
   const Layout = Component.layout || MainLayout;
   const getLayout = Component.getLayout || ((page: ReactNode) => page);

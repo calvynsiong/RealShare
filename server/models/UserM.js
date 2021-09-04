@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const { DOCUMENT_STATUS } = require('../static/enums');
 
@@ -14,6 +13,10 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
     status: {
       type: String,
       enum: Object.values(DOCUMENT_STATUS),
@@ -25,12 +28,12 @@ const UserSchema = new mongoose.Schema(
       min: 4,
       max: 30,
       trim: true,
+      unique: true,
     },
     password: {
       type: String,
       required: [true, 'Please add a password'],
       min: 8,
-      select: false,
       trim: true,
     },
     email: {
@@ -49,6 +52,10 @@ const UserSchema = new mongoose.Schema(
       default: `https://avatars.dicebear.com/api/gridy/:${Math.random()
         .toString(36)
         .replace(/[^a-z]+/g, '')}.svg`,
+    },
+    desc: {
+      type: String,
+      max: 200,
     },
     followers: [
       {
@@ -77,8 +84,17 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    liked: [
+      {
+        postId: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'posts',
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('users', UserSchema, 'users');
+module.exports = mongoose.model('users', UserSchema);

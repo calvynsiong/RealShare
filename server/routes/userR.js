@@ -1,21 +1,18 @@
 const express = require('express');
-const UserM = require('../models/UserM');
-const responseHandler = require('../utils/responseHandler');
 
 const router = express.Router();
 
+const {
+  updateUser,
+  deleteUser,
+  getUser,
+  getAllUsers,
+} = require('../controller/userC');
 // register
-router.route('/login').get((req, res) => {
-  const user = new UserM({
-    username: 'Calsvyn',
-    email: 'calvyn360@gmail.com',
-    password: 'password',
-  });
-  user.save();
-  responseHandler(
-    { statusCode: 200, payload: { user }, msg: 'Dummy User' },
-    res
-  );
-});
+
+router.route('/update/:id').put(updateUser);
+router.route('/delete/:id').delete(deleteUser);
+router.route('/find/:id').get(getUser);
+router.route('/all').get(getAllUsers);
 
 module.exports = router;

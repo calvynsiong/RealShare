@@ -1,4 +1,5 @@
 const ErrorResponse = require('./errorResponse');
+const bcrypt = require('bcryptjs');
 
 // Checks for parameter
 exports.paramCheck = (keys, obj) => {
@@ -38,4 +39,9 @@ exports.doesExist = (obj, model) => {
   if (!obj) {
     throw new ErrorResponse(`${model} not found.`, 404);
   }
+};
+
+exports.hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
 };

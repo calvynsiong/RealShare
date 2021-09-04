@@ -8,11 +8,11 @@ import {
 } from '@material-ui/icons';
 
 const SidebarSection = styled.section`
-flex:2;
-height:calc(100vh-5em)
-top:5em;
- width:25rem;
-  background-color:#e4e9e44f
+  flex: 2;
+  height: calc(100vh - 80px);
+  top: 5em;
+  width: 25rem;
+  background-color: #e4e9e44f;
 `;
 const SidebarContainer = styled.div``;
 const SidebarLinks = styled.ul``;

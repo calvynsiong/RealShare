@@ -13,7 +13,6 @@ const UploadWrapper = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.125);
   box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
   border: 1px solid rgba(255, 255, 255, 0.125);
-  border-radius: 1em;
 `;
 const UploadPhoto = styled.div`
   height: 50%;
@@ -29,7 +28,7 @@ const Divider = styled.hr`
 `;
 const InputText = styled.textarea`
   margin-top: 1rem;
-  border-radius: 1em;
+
   height: 100%;
   padding: 1.5em;
   flex: 10;
@@ -46,7 +45,6 @@ const UploadButton = styled.button`
   border: none;
   padding: 7px;
   width: 75%;
-  border-radius: 5px;
   background-color: blue;
   font-weight: 500;
 
@@ -177,7 +175,7 @@ const UploadBar = () => {
   };
 
   return (
-    <UploadContainer className='flex rounded-xl w-full mx-auto mt-16 md:w-3/4'>
+    <UploadContainer className='flex  w-full mx-auto mt-16 md:w-3/4'>
       <UploadWrapper className='h-full flex-1 w-full mx-12 my-4 p-4 flex flex-col'>
         <UploadPhoto className='w-full flex justify-center items-center gap-4 '>
           <ProfPic
