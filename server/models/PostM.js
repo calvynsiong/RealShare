@@ -18,6 +18,7 @@ const PostSchema = new mongoose.Schema(
     desc: {
       type: String,
       max: 500,
+      default: '',
     },
     userId: {
       type: mongoose.Types.ObjectId,
@@ -27,7 +28,7 @@ const PostSchema = new mongoose.Schema(
     comments: [
       {
         text: String,
-        postedBy: { type: ObjectId, ref: 'users' },
+        postedBy: { type: mongoose.Types.ObjectId, ref: 'users' },
       },
     ],
     likes: [
