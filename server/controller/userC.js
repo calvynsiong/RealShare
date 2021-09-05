@@ -8,6 +8,7 @@ const {
   getUser_DB,
   getAllUsers_DB,
   followUserAndUpdate_DB,
+  UnfollowUserAndUpdate_DB,
 } = require('../services/userS');
 
 // !Route : POST /api/v1/user/update/:id
@@ -102,50 +103,95 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
-// !Route : Get /api/v1/follow/:id
-// *Desc: Follow others
-exports.followUser = asyncHandler(async (req, res) => {
-  // To be followed user id;
+// ! Helper
+const handleUserFollowAndUnfollow = async (req, res, action) => {
+  // To be followed/unfollowed user id;
   const id = req.params.id;
   // Main user id
   const userId = req.body.userId;
-  console.log(id, userId);
 
   if (userId === id) {
     responseHandler(
-      { statusCode: 403, msg: 'You cannot follow yourself!' },
+      { statusCode: 403, msg: `You cannot ${action} yourself!` },
       res
     );
     return;
   }
-  try {
-    const user = await getUser_DB(userId);
-    console.log(user);
-    console.log(user.following.map((entry) => entry.user.toString()));
-    if (user.following.map((entry) => entry.user.toString()).includes(id)) {
-      responseHandler(
-        { statusCode: 409, msg: `You already follow user ${id}!` },
-        res
-      );
-      return;
-    }
-    // All conditions checked and user can be added
-    const [updatedUser, updatedFollowedUser] = await followUserAndUpdate_DB(
+
+  const user = await getUser_DB(userId);
+  console.log(user.following.map((entry) => entry.user.toString()));
+  // ! Only if trying to follow and checks if main user is already following
+  if (
+    action === 'follow' &&
+    user.following.map((entry) => entry.user.toString()).includes(id)
+  ) {
+    responseHandler(
+      { statusCode: 409, msg: `You already ${action} user ${id}!` },
+      res
+    );
+    return;
+  }
+  if (action === 'follow') {
+    const [updatedUser, followedUser] = await followUserAndUpdate_DB(
       userId,
       id
     );
     responseHandler(
       {
         statusCode: 200,
-        msg: `User ${userId} followed`,
+        msg: `User ${id} followed`,
         payload: {
           updatedUser: updatedUser.following,
-          updatedFollowedUser: updatedFollowedUser.followers,
+          followedUser: followedUser.followers,
         },
       },
       res
     );
+    return;
+  }
+  // ! Only if trying to unfollow and checks if actually following the person
+
+  if (user.followers.map((entry) => entry.user.toString()).includes(id)) {
+    responseHandler(
+      { statusCode: 409, msg: `You don't follow user ${id}!` },
+      res
+    );
+    return;
+  }
+  const [updatedUser, unfollowedUser] = await UnfollowUserAndUpdate_DB(
+    userId,
+    id
+  );
+  responseHandler(
+    {
+      statusCode: 200,
+      msg: `User ${userId} unfollowed`,
+      payload: {
+        updatedUser: updatedUser.following,
+        unfollowedUser: unfollowedUser.followers,
+      },
+    },
+    res
+  );
+};
+
+// !Route : Get /api/v1/follow/:id
+// *Desc: Follow others
+exports.followUser = asyncHandler(async (req, res) => {
+  try {
+    await handleUserFollowAndUnfollow(req, res, 'follow');
   } catch (err) {
+    console.log(err);
+    responseHandler({ statusCode: 500, msg: err.toString() }, res);
+  }
+});
+// !Route : Get /api/v1/unfollow/:id
+// *Desc: Unfollow others
+exports.unfollowUser = asyncHandler(async (req, res) => {
+  try {
+    await handleUserFollowAndUnfollow(req, res, 'unfollow');
+  } catch (err) {
+    console.log(err);
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
