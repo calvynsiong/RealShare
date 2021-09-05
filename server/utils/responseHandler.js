@@ -5,7 +5,7 @@ const responseHandler = (input, res) => {
       isSuccessful = true;
     } else {
       isSuccessful = false;
-      statusCode = 404;
+      statusCode = statusCode ?? 404;
     }
   };
 

@@ -25,7 +25,7 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
   const user = await createUser_DB(userData);
   responseHandler(
-    { statusCode: 200, payload: { user }, msg: 'User created' },
+    { statusCode: 200, payload: { user }, message: 'User created' },
     res
   );
 });
@@ -33,9 +33,9 @@ exports.registerUser = asyncHandler(async (req, res) => {
 // *Desc: login existing user
 exports.loginUser = asyncHandler(async (req, res) => {
   let userData = sanitizer(['email', 'password'], req.body);
-  const user = await loginUser_DB(userData);
+  const [user, token] = await loginUser_DB(userData);
   responseHandler(
-    { statusCode: 200, payload: { user }, msg: 'User logged in' },
+    { statusCode: 200, payload: { user, token }, message: 'User logged in' },
     res
   );
 });

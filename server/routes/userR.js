@@ -10,14 +10,15 @@ const {
   followUser,
   unfollowUser,
 } = require('../controller/userC');
+const { verifyToken } = require('../middleware/auth');
 // register
 
-router.route('/update/:id').put(updateUser);
-router.route('/delete/:id').delete(deleteUser);
-router.route('/find/:id').get(getUser);
-router.route('/all').get(getAllUsers);
-router.route('/follow/:id').put(followUser);
-router.route('/unfollow/:id').put(unfollowUser);
+router.route('/update/:id').put(verifyToken, updateUser);
+router.route('/delete/:id').delete(verifyToken, deleteUser);
+router.route('/find/:id').get(verifyToken, getUser);
+router.route('/all').get(verifyToken, getAllUsers);
+router.route('/follow/:id').put(verifyToken, followUser);
+router.route('/unfollow/:id').put(verifyToken, unfollowUser);
 
 // Follow others
 

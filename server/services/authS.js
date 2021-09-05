@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 
 const UserM = require('../models/UserM');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const ErrorResponse = require('../utils/errorResponse');
 
 exports.createUser_DB = async (userData) => {
@@ -39,7 +40,7 @@ exports.loginUser_DB = async (userData) => {
   try {
     const user = await UserM.findOne({ email });
     if (!user) {
-      throw new ErrorResponse(`User Not Found`, 404);
+      throw new ErrorResponse(`User Not Found. Email is invalid`, 404);
     }
 
     // Normal password then HASHED one
@@ -47,7 +48,9 @@ exports.loginUser_DB = async (userData) => {
     if (!passwordMatch) {
       throw new ErrorResponse(`Password Incorrect`, 401);
     }
-    return user;
+    // Create token after password matched
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    return [user, token];
   } catch (error) {
     throw new ErrorResponse(error, 404);
   }

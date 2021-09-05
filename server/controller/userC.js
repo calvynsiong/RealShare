@@ -21,7 +21,11 @@ exports.updateUser = asyncHandler(async (req, res) => {
         req.body.password = await hashPassword(req.body.password);
         const updatedUser = await updateUser_DB(req.params.id, req.body);
         responseHandler(
-          { statusCode: 200, payload: { updatedUser }, msg: 'User updated' },
+          {
+            statusCode: 200,
+            payload: { updatedUser },
+            msg: 'User updated',
+          },
           res
         );
       } catch (err) {
@@ -34,6 +38,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
 
   // Checks same user OR admin
   if (req.body.userId === req.params.id || req.body.isAdmin) {
+    console.log('Hello world');
     await handleUpdateUser(req, res);
   } else {
     responseHandler(
@@ -83,6 +88,8 @@ exports.getUser = asyncHandler(async (req, res) => {
       res
     );
   } catch (err) {
+    console.log(err);
+    console.log('uh');
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
@@ -100,7 +107,7 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
       res
     );
   } catch (err) {
-    responseHandler({ statusCode: 500, msg: err.toString() }, res);
+    responseHandler({ statusCode: 500, msg: 'Error occured' }, res);
   }
 });
 // ! Helper
