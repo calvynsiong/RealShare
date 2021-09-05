@@ -59,14 +59,14 @@ const UserSchema = new mongoose.Schema(
     },
     followers: [
       {
-        userId: {
+        user: {
           type: mongoose.Schema.ObjectId,
         },
       },
     ],
     following: [
       {
-        userId: {
+        user: {
           type: mongoose.Schema.ObjectId,
         },
       },

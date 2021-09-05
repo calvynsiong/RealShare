@@ -7,6 +7,7 @@ const {
   deleteUser_DB,
   getUser_DB,
   getAllUsers_DB,
+  followUserAndUpdate_DB,
 } = require('../services/userS');
 
 // !Route : POST /api/v1/user/update/:id
@@ -84,7 +85,7 @@ exports.getUser = asyncHandler(async (req, res) => {
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
-// !Route : Get /api/v1/user/all/:id
+// !Route : Get /api/v1/user/all/
 // *Desc: Find all users
 exports.getAllUsers = asyncHandler(async (req, res) => {
   try {
@@ -94,6 +95,53 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
         statusCode: 200,
         msg: `${users.length} users found`,
         payload: { users },
+      },
+      res
+    );
+  } catch (err) {
+    responseHandler({ statusCode: 500, msg: err.toString() }, res);
+  }
+});
+// !Route : Get /api/v1/follow/:id
+// *Desc: Follow others
+exports.followUser = asyncHandler(async (req, res) => {
+  // To be followed user id;
+  const id = req.params.id;
+  // Main user id
+  const userId = req.body.userId;
+  console.log(id, userId);
+
+  if (userId === id) {
+    responseHandler(
+      { statusCode: 403, msg: 'You cannot follow yourself!' },
+      res
+    );
+    return;
+  }
+  try {
+    const user = await getUser_DB(userId);
+    console.log(user);
+    console.log(user.following.map((entry) => entry.user.toString()));
+    if (user.following.map((entry) => entry.user.toString()).includes(id)) {
+      responseHandler(
+        { statusCode: 409, msg: `You already follow user ${id}!` },
+        res
+      );
+      return;
+    }
+    // All conditions checked and user can be added
+    const [updatedUser, updatedFollowedUser] = await followUserAndUpdate_DB(
+      userId,
+      id
+    );
+    responseHandler(
+      {
+        statusCode: 200,
+        msg: `User ${userId} followed`,
+        payload: {
+          updatedUser: updatedUser.following,
+          updatedFollowedUser: updatedFollowedUser.followers,
+        },
       },
       res
     );
