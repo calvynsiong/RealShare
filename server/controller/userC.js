@@ -119,12 +119,11 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
   }
 
   const user = await getUser_DB(userId);
-  console.log(user.following.map((entry) => entry.user.toString()));
+  const peopleImFollowing = user.following.map((entry) =>
+    entry.user.toString()
+  );
   // ! Only if trying to follow and checks if main user is already following
-  if (
-    action === 'follow' &&
-    user.following.map((entry) => entry.user.toString()).includes(id)
-  ) {
+  if (action === 'follow' && peopleImFollowing.includes(id)) {
     responseHandler(
       { statusCode: 409, msg: `You already ${action} user ${id}!` },
       res
@@ -149,9 +148,9 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
     );
     return;
   }
-  // ! Only if trying to unfollow and checks if actually following the person
-
-  if (user.followers.map((entry) => entry.user.toString()).includes(id)) {
+  // ! Only if trying to unfollow and checks if not following the person
+  console.log('FOLLOWERS?', !peopleImFollowing.includes(id));
+  if (!peopleImFollowing.includes(id)) {
     responseHandler(
       { statusCode: 409, msg: `You don't follow user ${id}!` },
       res
