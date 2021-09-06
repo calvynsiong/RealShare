@@ -75,24 +75,24 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    myPosts: [
-      {
-        postId: {
-          type: mongoose.Schema.ObjectId,
-          ref: 'posts',
-          required: true,
-        },
-      },
-    ],
-    liked: [
-      {
-        postId: {
-          type: mongoose.Schema.ObjectId,
-          ref: 'posts',
-          required: true,
-        },
-      },
-    ],
+    // myPosts: [
+    //   {
+    //     postId: {
+    //       type: mongoose.Schema.ObjectId,
+    //       ref: 'posts',
+    //       required: true,
+    //     },
+    //   },
+    // ],
+    // liked: [
+    //   {
+    //     postId: {
+    //       type: mongoose.Schema.ObjectId,
+    //       ref: 'posts',
+    //       required: true,
+    //     },
+    //   },
+    // ],
   },
   { timestamps: true }
 );

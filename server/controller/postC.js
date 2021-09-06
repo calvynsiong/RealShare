@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const responseHandler = require('../utils/responseHandler');
 const asyncHandler = require('../utils/asyncHandler');
 const {
@@ -7,6 +8,7 @@ const {
   getSinglePostById_DB,
   createPost_DB,
   commentOnPost_DB,
+  getMyLikedPosts_DB,
   deletePost_DB,
   likeOrUnlikePost_DB,
 } = require('../services/postS');
@@ -29,13 +31,36 @@ exports.createPost = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 500,
-        msg: err.toString(),
+        msg: error.message ?? error.toString(),
       },
       res
     );
   }
 });
-exports.deletePost = asyncHandler(async (req, res, next) => {});
+// !Route : Delete /api/v1/post/delete/:postid
+exports.deletePost = asyncHandler(async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const { userId } = req.body;
+    const deletedPost = await deletePost_DB(userId, postId);
+    return responseHandler(
+      {
+        statusCode: 200,
+        msg: `Image ${deletedPost?.image} has been deleted`,
+        payload: { deletedPost },
+      },
+      res
+    );
+  } catch (err) {
+    return responseHandler(
+      {
+        statusCode: 500,
+        msg: err.message ?? err.toString(),
+      },
+      res
+    );
+  }
+});
 // !Route : GET /api/v1/post/myPosts/:id
 
 exports.getMyPosts = asyncHandler(async (req, res, next) => {
@@ -54,7 +79,31 @@ exports.getMyPosts = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 500,
-        msg: err.toString(),
+        msg: err.message ?? err.toString(),
+      },
+      res
+    );
+  }
+});
+// !Route : GET /api/v1/post/myPosts/:id
+
+exports.getAllLikedPosts = asyncHandler(async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const likedPosts = await getMyLikedPosts_DB(id);
+    return responseHandler(
+      {
+        statusCode: 200,
+        msg: `${likedPosts.length} of my liked posts retrieved`,
+        payload: { likedPosts },
+      },
+      res
+    );
+  } catch (err) {
+    return responseHandler(
+      {
+        statusCode: 500,
+        msg: err.message ?? err.toString(),
       },
       res
     );
@@ -78,7 +127,7 @@ exports.getFeedPosts = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 500,
-        msg: err.toString(),
+        msg: err.message ?? err.toString(),
       },
       res
     );
@@ -100,7 +149,7 @@ exports.getAllPosts = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 500,
-        msg: err.toString(),
+        msg: err.message ?? err.toString(),
       },
       res
     );
@@ -123,11 +172,51 @@ exports.getSinglePost = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 500,
-        msg: err.toString(),
+        msg: err.message ?? err.toString(),
       },
       res
     );
   }
 });
-exports.commentOnPost = asyncHandler(async (req, res, next) => {});
-exports.handleLikePost = asyncHandler(async (req, res, next) => {});
+exports.commentOnPost = asyncHandler(async (req, res, next) => {
+  try {
+    const { text, userId } = req.body;
+    const { postId } = req.params;
+    const [response, updatedPost] = await commentOnPost_DB(
+      { text, userId },
+      postId
+    );
+    return responseHandler(
+      {
+        statusCode: 200,
+        msg: `The comment was made on post ${updatedPost.img}`,
+        payload: { response, updatedPost },
+      },
+      res
+    );
+  } catch (error) {}
+});
+exports.handleLikePost = asyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const { postId } = req.params;
+    const [updatedPost] = await likeOrUnlikePost_DB(userId, postId);
+    return responseHandler(
+      {
+        statusCode: 200,
+        msg: `Post ${updatedPost._id} has been liked`,
+        payload: { updatedPost },
+      },
+      res
+    );
+  } catch (error) {
+    error.captureStackTrace();
+    return responseHandler(
+      {
+        statusCode: 500,
+        msg: error.message ?? error.toString(),
+      },
+      res
+    );
+  }
+});

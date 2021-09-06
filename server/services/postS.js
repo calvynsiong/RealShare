@@ -1,10 +1,11 @@
+const mongoose = require('mongoose');
 const UserM = require('../models/UserM');
 const PostM = require('../models/PostM');
 const ErrorResponse = require('../utils/errorResponse');
 
 const populatePost = async (post) => {
   const populatedPost = await post
-    .populate('userId')
+    .populate('userId', ['_id', 'username'])
     .populate('comments.postedBy', ['_id', 'name'])
     .sort({ createdAt: -1 });
   return populatedPost;
@@ -17,10 +18,13 @@ exports.getMyPosts_DB = async (id) => {
 };
 exports.getFeedPosts_DB = async (id) => {
   const user = await UserM.findById(id);
+  console.log(user);
+
   const following = user.following.map((entry) => entry.user.toString());
   const feedPosts = await populatePost(
-    PostM.find({ postedBy: { $in: following } })
+    PostM.find({ userId: { $in: following } })
   );
+  console.log(feedPosts, following);
   return feedPosts;
 };
 exports.getAllPosts_DB = async () => {
@@ -30,6 +34,10 @@ exports.getAllPosts_DB = async () => {
 exports.getSinglePostById_DB = async (postId) => {
   const allPosts = await populatePost(PostM.findOne({ _id: postId }));
   return allPosts;
+};
+exports.getMyLikedPosts_DB = async (userId) => {
+  const likedPosts = await populatePost(PostM.find({ user: userId }));
+  return likedPosts;
 };
 exports.createPost_DB = async (postData) => {
   const session = await mongoose.startSession();
@@ -60,6 +68,70 @@ exports.createPost_DB = async (postData) => {
     session.endSession();
   }
 };
-exports.deletePost_DB = async () => {};
-exports.commentOnPost_DB = async () => {};
-exports.likeOrUnlikePost_DB = async () => {};
+exports.deletePost_DB = async (userId, postId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const user = await UserM.findById(userId);
+    const postToBeDeleted = await PostM.findById(postId);
+    console.log(userId, postToBeDeleted.userId);
+    console.log('Cannot be deleted?');
+    // If user is not an admin OR not the owner of the post
+    if (!(user.isAdmin || userId === postToBeDeleted.userId.toString())) {
+      throw new ErrorResponse('Not authorized to deleted this post', 403);
+    }
+
+    if (!postToBeDeleted) {
+      throw new ErrorResponse('No post with this id exists', 404);
+    }
+
+    const deletedPost = await PostM.findByIdAndDelete(postId, { session })
+      .exec()
+      .catch((err) => {
+        throw err;
+      });
+    await session.commitTransaction();
+    session.endSession();
+    return deletedPost;
+  } catch (error) {
+    await session.abortTransaction();
+    console.log(error);
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+exports.commentOnPost_DB = async (comment, postId) => {
+  const updatedPost = await PostM.findByIdAndUpdate(
+    postId,
+    { $push: { comments: comment } },
+    { new: true }
+  )
+    .populate('userId', ['_id', 'username'])
+    .populate('comments.postedBy', ['_id', 'username'])
+    .exec((error, res) => {
+      if (error) {
+        throw new ErrorResponse('Update failed', 422);
+      }
+      return [res, updatedPost];
+    });
+};
+exports.likeOrUnlikePost_DB = async (userId, postId) => {
+  let post = PostM.findById(postId);
+  if (!post) {
+    throw new ErrorResponse('No post with this id exists', 404);
+  }
+  // Unlikes if already liked
+  if (post.likes.includes(userId)) {
+    post = await PostM.findByIdAndUpdate(postId, {
+      $pull: { likes: userId },
+    });
+  }
+  // Likes if not liked yet
+  else {
+    post = await PostM.findByIdAndUpdate(postId, {
+      $push: { likes: userId },
+    });
+  }
+  return post;
+};
