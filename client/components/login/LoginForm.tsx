@@ -44,7 +44,7 @@ const LoginForm = () => {
   const buttonClass =
     'text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base';
 
-  const invalid = !(username && password && email);
+  const invalid = !(username && password.length >= 8);
   return (
     <article className='flex w-full md:w-3/5 flex-wrap m-4'>
       <div className='flex flex-col items-center bg-white p-8 border border-gray-primary m-4 rounded'>
@@ -75,14 +75,16 @@ const LoginForm = () => {
           >
             Login
           </button>
-          <button
-            disabled={false}
-            type='submit'
-            className={`bg-green-400 p-2  ${buttonClass}
-            `}
-          >
-            Don't have an account yet? Sign up!
-          </button>
+          <Link href='/register'>
+            <button
+              disabled={false}
+              type='submit'
+              className={`bg-green-400 p-2  ${buttonClass}
+              `}
+            >
+              Don't have an account yet? Sign up!
+            </button>
+          </Link>
           <Link href='/'>
             <p className='text-center text-[#1775ee] mt-2'>Forgot password?</p>
           </Link>

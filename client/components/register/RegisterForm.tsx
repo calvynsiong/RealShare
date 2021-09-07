@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import React, { ChangeEvent, Fragment, useState } from 'react';
 import styled from 'styled-components';
+import { useRegisterUserQ } from '../../queries/authQ';
 // components
 
 import { capitalize } from '../../utils/functions';
 import { errorToast } from '../../utils/toasts';
+import { useRouter } from 'next/router';
 
 interface IButtonProps {
   invalid: boolean;
@@ -12,7 +14,9 @@ interface IButtonProps {
 const SignUpButton = styled.button<IButtonProps>`
   opacity: ${(props) => (props.invalid ? '0.5' : '1')};
 `;
+
 const RegisterForm = () => {
+  const { mutate: register } = useRegisterUserQ();
   interface IRegisterInfo {
     username: string;
     password: string;
@@ -58,6 +62,7 @@ const RegisterForm = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     const emailRegex =
@@ -66,8 +71,8 @@ const RegisterForm = () => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     event.preventDefault();
     if (invalid) return;
-    setLoading(true);
-    setError(null);
+    // setLoading(true);
+    // setError(null);
     const errorCheckList = [
       {
         regex: usernameRegex,
@@ -95,6 +100,12 @@ const RegisterForm = () => {
         return;
       }
     }
+    register({
+      username,
+      email,
+      password,
+    });
+    router.push('/login');
   };
 
   const invalid = !(

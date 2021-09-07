@@ -18,7 +18,9 @@ interface Props {
   pid: string;
 }
 
-export const getServerSideProps = async (context: { params: { pid: any } }) => {
+export const getServerSideProps = async (context: {
+  params: { pid: string };
+}) => {
   const pid = context.params.pid;
   console.log(pid);
   return {
