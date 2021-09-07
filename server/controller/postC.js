@@ -182,35 +182,39 @@ exports.commentOnPost = asyncHandler(async (req, res, next) => {
   try {
     const { text, userId } = req.body;
     const { postId } = req.params;
-    const [response, updatedPost] = await commentOnPost_DB(
-      { text, userId },
-      postId
-    );
+    const updatedPost = await commentOnPost_DB({ text, userId }, postId);
     return responseHandler(
       {
         statusCode: 200,
         msg: `The comment was made on post ${updatedPost.img}`,
-        payload: { response, updatedPost },
-      },
-      res
-    );
-  } catch (error) {}
-});
-exports.handleLikePost = asyncHandler(async (req, res, next) => {
-  try {
-    const { userId } = req.body;
-    const { postId } = req.params;
-    const [updatedPost] = await likeOrUnlikePost_DB(userId, postId);
-    return responseHandler(
-      {
-        statusCode: 200,
-        msg: `Post ${updatedPost._id} has been liked`,
         payload: { updatedPost },
       },
       res
     );
   } catch (error) {
-    error.captureStackTrace();
+    return responseHandler(
+      {
+        statusCode: 500,
+        msg: error.message ?? error.toString(),
+      },
+      res
+    );
+  }
+});
+exports.handleLikeAndDislikePost = asyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const { postId } = req.params;
+    const [updatedPost, action] = await likeOrUnlikePost_DB(userId, postId);
+    return responseHandler(
+      {
+        statusCode: 200,
+        msg: `Post ${updatedPost._id} has been ${action}`,
+        payload: { updatedPost },
+      },
+      res
+    );
+  } catch (error) {
     return responseHandler(
       {
         statusCode: 500,

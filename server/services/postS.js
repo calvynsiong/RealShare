@@ -7,6 +7,7 @@ const populatePost = async (post) => {
   const populatedPost = await post
     .populate('userId', ['_id', 'username'])
     .populate('comments.postedBy', ['_id', 'name'])
+    .populate('likes', ['_id', 'username'])
     .sort({ createdAt: -1 });
   return populatedPost;
 };
@@ -108,16 +109,17 @@ exports.commentOnPost_DB = async (comment, postId) => {
     { new: true }
   )
     .populate('userId', ['_id', 'username'])
-    .populate('comments.postedBy', ['_id', 'username'])
-    .exec((error, res) => {
-      if (error) {
-        throw new ErrorResponse('Update failed', 422);
-      }
-      return [res, updatedPost];
+    .populate('comments.userId', ['_id', 'username'])
+    .exec()
+    .catch((err) => {
+      throw err;
     });
+  return updatedPost;
 };
 exports.likeOrUnlikePost_DB = async (userId, postId) => {
-  let post = PostM.findById(postId);
+  let post = await PostM.findOne({ id: postId });
+  console.log(post.likes, userId);
+  let action;
   if (!post) {
     throw new ErrorResponse('No post with this id exists', 404);
   }
@@ -126,12 +128,14 @@ exports.likeOrUnlikePost_DB = async (userId, postId) => {
     post = await PostM.findByIdAndUpdate(postId, {
       $pull: { likes: userId },
     });
+    action = 'disliked';
   }
   // Likes if not liked yet
   else {
     post = await PostM.findByIdAndUpdate(postId, {
       $push: { likes: userId },
     });
+    action = 'liked';
   }
-  return post;
+  return [post, action];
 };
