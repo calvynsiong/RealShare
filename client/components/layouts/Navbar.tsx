@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 import Image from 'next/image';
 import { Search, Person, Notifications } from '@material-ui/icons';
@@ -60,35 +61,41 @@ const IconList = [
 const Navbar = () => {
   return (
     <Section className='flex items-center fixed top-0  w-screen'>
-      <Logo className='hidden sm:flex   cursor-pointer'>
-        <span className='font-bold'>RealShare</span>
-      </Logo>
+      <Link href='/'>
+        <Logo className='hidden sm:flex   cursor-pointer'>
+          <span className='font-bold'>RealShare</span>
+        </Logo>
+      </Link>
       <CenterBar>
         <SearchBar className='z-50 bg-white rounded-full p-2 ml-8 sm:m-2  flex text-black'>
           <Search></Search>
           <input
             type='text'
-            className='w-full h-full bg-blue-100 focus:outline-none'
+            className='w-full h-full  focus:outline-none'
             placeholder='Search to find your friends and their posts'
           />
         </SearchBar>
       </CenterBar>
-      <RightBar className='flex z-50 items-center justify-between mx-8'>
-        <NavLinks className='hidden sm:flex gap-4 font-semibold text-lg'>
-          <span className='cursor-pointer'>Home</span>
+      <RightBar className='flex z-50 items-center justify-end gap-4 mx-8'>
+        <NavLinks className='hidden sm:flex gap-8 font-semibold text-lg'>
+          <Link href='/'>
+            <span className='cursor-pointer'>Feed</span>
+          </Link>
         </NavLinks>
-        <NavIcons className='flex justify-around gap-4'>
+        {/* <NavIcons className='flex justify-around gap-4'>
           {IconList.map((icon, index) => (
             <IconWrapper className='flex cursor-pointer relative' key={index}>
               {icon.children}
             </IconWrapper>
           ))}
-        </NavIcons>
-        <img
-          className='h-8 rounded-full cursor-pointer'
-          src='https://avatars.dicebear.com/api/gridy/:seed.svg'
-          alt='avatar'
-        ></img>
+        </NavIcons> */}
+        <Link href='/profile/2'>
+          <img
+            className='h-8 rounded-full cursor-pointer'
+            src='https://avatars.dicebear.com/api/gridy/:seed.svg'
+            alt='avatar'
+          ></img>
+        </Link>
       </RightBar>
     </Section>
   );

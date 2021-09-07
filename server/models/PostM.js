@@ -25,6 +25,16 @@ const PostSchema = new mongoose.Schema(
       required: true,
       ref: 'users',
     },
+    tags: [
+      {
+        type: String,
+      },
+    ],
+    location: [
+      {
+        type: String,
+      },
+    ],
     comments: [
       {
         text: String,

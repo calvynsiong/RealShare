@@ -5,24 +5,21 @@ import Skeleton from 'react-loading-skeleton';
 const PhotoWrapper = styled.div``;
 // const
 
-const Photos = () => {
+const Photos = ({ defaultImg }: { defaultImg: string }) => {
+  console.log(defaultImg);
   const LoadingPhotos = new Array(10)
     .fill(1)
     .map((_, i) => <Skeleton key={i} />);
   const NoPostsFiller = <p className='text-center text-2xl'>No Posts Yet</p>;
-
   return (
-    <div className='border border-black mt-12 mx-8 p-4'>
+    <div className='border m-8 p-4'>
       <PhotoWrapper className='grid grid-cols-3 gap-8 my-2'>
         {false
           ? LoadingPhotos
           : true
           ? new Array(10).fill(1).map((_, i) => (
-              <div key={i} className='relative group'>
-                <img
-                  src={process.env.REACT_APP_DEFAULT_IMG_SOURCE}
-                  alt={`Hello World`}
-                />
+              <div key={i} className='relative group cursor-pointer'>
+                <img src={defaultImg} alt={`Hello World`} />
 
                 <div className='absolute bottom-0 left-0 bg-gray-200 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden'>
                   <p className='flex items-center text-white font-bold'>
@@ -65,4 +62,9 @@ const Photos = () => {
   );
 };
 
+export async function getStaticProps() {
+  return {
+    props: { defaultImg: process.env.REACT_APP_DEFAULT_IMG_SOURCE }, // will be passed to the page component as props
+  };
+}
 export default Photos;
