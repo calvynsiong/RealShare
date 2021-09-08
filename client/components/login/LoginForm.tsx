@@ -1,27 +1,27 @@
 import Link from 'next/link';
 import React, { ChangeEvent, Fragment, useState } from 'react';
+import { useLoginUserQ } from '../../queries/authQ';
 // components
 
 import { capitalize } from '../../utils/functions';
+import { useRouter } from 'next/router';
 
 const LoginForm = () => {
   interface ILoginInfo {
-    username: string;
-    password: string;
     email: string;
+    password: string;
   }
 
   const initialState: ILoginInfo = {
-    username: '',
-    password: '',
     email: '',
+    password: '',
   };
 
   const [loginInfo, setLoginInfo] = useState(initialState);
-  const { username, password, email } = loginInfo;
+  const { email, password } = loginInfo;
 
   const textFields = [
-    { field: username, name: 'username', placeholder: 'Enter your username' },
+    { field: email, name: 'email', placeholder: 'Enter your email' },
     {
       field: password,
       name: 'password',
@@ -36,15 +36,21 @@ const LoginForm = () => {
     };
     setLoginInfo(newData);
   };
+  const { mutate: login } = useLoginUserQ();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
+    await login({ email, password });
+    router.push('/profile/2');
   };
 
   const buttonClass =
     'text-black w-3/4 rounded h-8 font-bold mt-4 mx-auto text-center flex justify-center items-center text-xs sm:text-base';
 
-  const invalid = !(username && password.length >= 8);
+  const invalid = !(email && password.length >= 8);
   return (
     <article className='flex w-full md:w-3/5 flex-wrap m-4'>
       <div className='flex flex-col items-center bg-white p-8 border border-gray-primary m-4 rounded'>
@@ -59,7 +65,7 @@ const LoginForm = () => {
               <input
                 type={type ?? 'text'}
                 placeholder={placeholder}
-                aria-label='Enter your email address'
+                aria-label={name}
                 className='text-sm text-gray-base w-full mr-3 py-5 px-4 h-2 border  border-gray-primary rounded mb-2'
                 value={field}
                 name={name}

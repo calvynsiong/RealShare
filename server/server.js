@@ -11,6 +11,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const connectDB = require('./config/connectDB');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 dotenv.config({ path: './config/config.env' });
 const dev = process.env.NODE_ENV !== 'production';
@@ -25,15 +27,25 @@ const PORT = process.env.PORT || 5000;
 //   .then(() => {
 const server = express();
 // Enable CORS
-server.use(cors());
-// logging
+
 if (process.env.NODE_ENV === 'development') {
   server.use(morgan('dev'));
 }
-
+server.use(
+  session({
+    secret: 'some-key',
+    name: 'jwt',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { domain: 'app.com', secure: false }, // <- THIS, set domain as 'app.com'
+  })
+);
+server.use(cors({ origin: '*', credentials: true })); // cors
 server.use(express.json());
+server.use(cookieParser());
 // Sanitize
 server.use(mongoSanitize());
+// sign cookies
 
 // Prevent XSS attacks
 server.use(xss());

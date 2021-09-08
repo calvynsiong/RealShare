@@ -28,9 +28,9 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(message, 400);
   }
 
-  console.log(`---- error res message ---`.magenta.bold);
-  console.log(`${JSON.stringify(error)}`.magenta.bold);
-  console.log(`--------------------------`.magenta.bold);
+  console.log(`---- error res message ---`);
+  console.log(`${JSON.stringify(error)}`);
+  console.log(`--------------------------`);
 
   res.status(error.statusCode || 500).json({
     success: false,

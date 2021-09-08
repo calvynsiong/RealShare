@@ -12,7 +12,6 @@ exports.registerUser = asyncHandler(async (req, res) => {
   let userData = sanitizer(['username', 'email', 'password'], req.body);
   // encode password
   const hashedPassword = await hashPassword(userData.password);
-  console.log(hashedPassword);
   userData = {
     ...userData,
     password: hashedPassword,
@@ -31,10 +30,15 @@ exports.registerUser = asyncHandler(async (req, res) => {
 });
 // !Route : POST /api/v1/auth/login
 // *Desc: login existing user
-exports.loginUser = asyncHandler(async (req, res) => {
+exports.loginUser = asyncHandler(async (req, res, next) => {
   let userData = sanitizer(['email', 'password'], req.body);
   const [user, token] = await loginUser_DB(userData);
-  responseHandler(
+  res.cookie('jwt', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+  });
+
+  return responseHandler(
     { statusCode: 200, payload: { user, token }, message: 'User logged in' },
     res
   );
