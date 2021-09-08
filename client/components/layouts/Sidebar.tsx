@@ -34,8 +34,8 @@ const Friend = styled.li`
   width: calc(100%-2rem);
 `;
 const ListItems = [
-  { icon: <RssFeed />, text: ' Feed' },
-  { icon: <PlayCircleFilledOutlined />, text: ' Video' },
+  // { icon: <RssFeed />, text: ' Feed' },
+  // { icon: <PlayCircleFilledOutlined />, text: ' Video' },
   { icon: <Bookmark />, text: ' Bookmarks' },
 ];
 const Sidebar = () => {
@@ -51,7 +51,7 @@ const Sidebar = () => {
           ))}
         </SidebarLinks>
         <Divider></Divider>
-        <FriendsList className='flex flex-col overflow-y-scroll'>
+        <FriendsList className=' mt-4 flex flex-col overflow-y-scroll'>
           <span className='text-xl font-semibold  mb-8 ml-4 '>
             Friends List (0)
           </span>

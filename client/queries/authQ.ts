@@ -2,12 +2,16 @@ import axios from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { errorToast, successToast } from '../utils/toasts';
 
-axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
+axios.defaults.baseURL = 'http://localhost:5000';
 
 interface IRegisterInfo {
   email: string;
   password: string;
   username?: string;
+}
+interface ILoginInfo {
+  info: { email: string; password: string; username?: string };
+  userSet: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const useRegisterUserQ = () => {
@@ -31,26 +35,38 @@ export const useRegisterUserQ = () => {
 export const useLoginUserQ = () => {
   const client = useQueryClient();
   return useMutation(
-    (loginInfo: IRegisterInfo) => {
-      // console.log(loginInfo);
+    (loginInfo: ILoginInfo) => {
       return axios
-        .post('/api/v1/auth/login', loginInfo, {
+        .post('/api/v1/auth/login', loginInfo.info, {
           headers: {
             withCredentials: true,
           },
         })
         .then((res) => {
-          return res.data.dataPayload;
+          return { payload: res.data.dataPayload, userSet: loginInfo.userSet };
         });
     },
     {
       onSuccess: async (data) => {
-        localStorage.setItem('token', data.token);
-        const { password, ...userInfo } = data.user;
+        localStorage.setItem('token', data.payload.token);
+        const { password, ...userInfo } = data.payload.user;
         successToast('Successfully logged in');
         await client.setQueryData(['user'], userInfo);
+        data.userSet(userInfo);
       },
       onError: async (err: string) => errorToast(err.toString()),
     }
   );
+};
+
+export const useGetUserQ = () => {
+  const client = useQueryClient();
+  return useQuery<any, any>(['user'], async () => {
+    const res = await axios.get('/api/v1/auth/user', {
+      headers: {
+        withCredentials: true,
+      },
+    });
+    return res.data.dataPayload;
+  });
 };

@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import React, { ChangeEvent, Fragment, useState } from 'react';
+import React, { ChangeEvent, Fragment, useContext, useState } from 'react';
 import { useLoginUserQ } from '../../queries/authQ';
 // components
 
 import { capitalize } from '../../utils/functions';
 import { useRouter } from 'next/router';
+import { UserContext } from '../../pages/_app';
 
 const LoginForm = () => {
   interface ILoginInfo {
@@ -20,6 +21,9 @@ const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState(initialState);
   const { email, password } = loginInfo;
 
+  const { user, userSet } = useContext(UserContext)!;
+
+  console.log('user', user);
   const textFields = [
     { field: email, name: 'email', placeholder: 'Enter your email' },
     {
@@ -36,14 +40,12 @@ const LoginForm = () => {
     };
     setLoginInfo(newData);
   };
-  const { mutate: login } = useLoginUserQ();
+  const { mutateAsync: login } = useLoginUserQ();
   const router = useRouter();
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await login({ email, password });
+    await login({ info: { email, password }, userSet });
     router.push('/profile/2');
   };
 

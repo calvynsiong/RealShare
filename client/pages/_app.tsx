@@ -17,6 +17,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { createContext } from 'react';
 import { useState } from 'react';
+import setJWTinAxios from '../utils/setJWTinAxios';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type MyAppProps<P = {}> = AppProps<P> & {
@@ -24,13 +25,21 @@ type MyAppProps<P = {}> = AppProps<P> & {
   user?: string | null;
 };
 
-axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
+axios.defaults.baseURL = 'https/localhost:5000';
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: MyAppProps) {
-  const router = useRouter();
+interface IUser {
+  username: string;
+  email: string;
+  avatar: string;
+}
+export const UserContext = createContext<{
+  user: IUser | null;
+  userSet: React.Dispatch<React.SetStateAction<IUser | null>>;
+} | null>(null);
 
+function MyApp({ Component, pageProps }: MyAppProps) {
   useEffect(() => {
     (document.querySelector('body') as HTMLElement).classList.add('m-0');
   }, []);
@@ -38,15 +47,14 @@ function MyApp({ Component, pageProps }: MyAppProps) {
   const Layout = Component.layout || MainLayout;
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
 
-  interface IUser {
-    username: string;
-    email: string;
-    avatar: string;
+  if (process.browser && localStorage.token) {
+    setJWTinAxios(localStorage.token);
+    // userSet
   }
 
   const [user, userSet] = useState<IUser | null>(null);
 
-  const UserContext = createContext<IUser | null>(null);
+  const props = { user, userSet };
 
   return (
     <>
@@ -60,7 +68,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       <QueryClientProvider client={queryClient}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <ToastContainer></ToastContainer>;
-        <UserContext.Provider value={user}>
+        <UserContext.Provider value={props}>
           <Layout> {getLayout(<Component {...pageProps} />)}</Layout>
         </UserContext.Provider>
         <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
