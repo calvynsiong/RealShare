@@ -6,7 +6,7 @@ const errorHandler = (err, req, res, next) => {
   error.message = err.message;
 
   // Log to console for dev
-  console.log('errorHandler Logs:'.bold());
+  console.log('errorHandler Logs:');
   console.log(err);
   console.log(`${err}`.underline);
 

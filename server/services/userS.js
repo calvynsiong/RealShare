@@ -2,6 +2,7 @@ const UserM = require('../models/UserM');
 const mongoose = require('mongoose');
 const ErrorResponse = require('../utils/errorResponse');
 const { DOCUMENT_STATUS } = require('../static/enums.js');
+const mapUserInfo = require('../utils/functions');
 
 exports.getAllUsers_DB = async () => {
   const users = await UserM.find({ status: DOCUMENT_STATUS.ACTIVE });
@@ -16,7 +17,7 @@ const cleanUpEmptyFollowers = async (userId) => {
   const allIds = users.map((user) => user._id.toString());
   // Obtains users + following/followers
   const mainUser = await UserM.findById(userId);
-  console.log(mainUser, 'is user');
+
   const followers = mainUser.followers.map((entry) => entry.user.toString());
   const following = mainUser.following.map((entry) => entry.user.toString());
   // Removes follower id if none-existent in db
@@ -72,8 +73,15 @@ exports.deleteUser_DB = async (id) => {
 exports.getUser_DB = async (id) => {
   const user = await UserM.findById(id);
   await cleanUpEmptyFollowers(id);
-  // Make sure password does not get fetched
-  const { password, updatedAt, ...userData } = user._doc;
+  let { password, updatedAt, ...userData } = user._doc;
+  const followers = await UserM.find({
+    $in: userData.followers.map((entry) => entry.user.toString()),
+  });
+  const following = await UserM.find({
+    $in: userData.following.map((entry) => entry.user.toString()),
+  });
+  userData.followers = mapUserInfo(followers);
+  userData.following = mapUserInfo(following);
   return userData;
 };
 

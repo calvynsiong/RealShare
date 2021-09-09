@@ -1,5 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { IUser } from '../pages/_app';
+import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
 
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -11,7 +13,6 @@ interface IRegisterInfo {
 }
 interface ILoginInfo {
   info: { email: string; password: string; username?: string };
-  userSet: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const useRegisterUserQ = () => {
@@ -34,39 +35,57 @@ export const useRegisterUserQ = () => {
 };
 export const useLoginUserQ = () => {
   const client = useQueryClient();
+  console.log('Login');
   return useMutation(
     (loginInfo: ILoginInfo) => {
       return axios
-        .post('/api/v1/auth/login', loginInfo.info, {
+        .post('http://localhost:5000/api/v1/auth/login', loginInfo.info, {
           headers: {
             withCredentials: true,
           },
         })
         .then((res) => {
-          return { payload: res.data.dataPayload, userSet: loginInfo.userSet };
+          return { payload: res.data.dataPayload };
         });
     },
     {
       onSuccess: async (data) => {
         localStorage.setItem('token', data.payload.token);
         const { password, ...userInfo } = data.payload.user;
+        localStorage.setItem('user', JSON.stringify(userInfo));
+        client.setQueryData(
+          ['userId'],
+          data.payload.user._id ?? JSON.parse(localStorage.user)
+        )?._id;
+        const currentTime = new Date();
+        localStorage.setItem(
+          'timeOfLogin',
+          JSON.stringify(currentTime.setHours(currentTime.getHours() + 4))
+        );
         successToast('Successfully logged in');
-        await client.setQueryData(['user'], userInfo);
-        data.userSet(userInfo);
       },
-      onError: async (err: string) => errorToast(err.toString()),
+      onError: async () => errorToast('Login Failed'),
     }
   );
 };
 
-export const useGetUserQ = () => {
-  const client = useQueryClient();
-  return useQuery<any, any>(['user'], async () => {
-    const res = await axios.get('/api/v1/auth/user', {
-      headers: {
-        withCredentials: true,
-      },
-    });
-    return res.data.dataPayload;
-  });
+export const useGetUserByIdQ = (userId: string) => {
+  return useQuery(
+    'user',
+    () => {
+      return axios
+        .get(`/api/v1/user/find/${userId}`, {
+          headers: {
+            withCredentials: true,
+          },
+        })
+        .then((res) => res.data.dataPayload.user);
+    },
+    {
+      cacheTime: minutesToMs(100),
+      staleTime: minutesToMs(100),
+
+      onError: (err: string) => errorToast(err),
+    }
+  );
 };

@@ -1,7 +1,7 @@
 // styles
 import '../styles/index.css';
 // libraries
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useContext, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Head from 'next/head';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -14,47 +14,64 @@ import MainLayout from '../components/layouts/MainLayout';
 import type { AppProps } from 'next/app';
 import { Page } from '../types/page';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import { createContext } from 'react';
-import { useState } from 'react';
-import setJWTinAxios from '../utils/setJWTinAxios';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type MyAppProps<P = {}> = AppProps<P> & {
   Component: Page<P>;
   user?: string | null;
 };
 
-axios.defaults.baseURL = 'https/localhost:5000';
+axios.defaults.baseURL =
+  process.env.REACT_APP_BACKEND_URL ?? 'https/localhost:5000';
 
 const queryClient = new QueryClient();
 
-interface IUser {
+interface IFollows {
+  id: string;
+  username: string;
+  avatar: string;
+  email: string;
+}
+export interface IUser {
+  _id: string;
   username: string;
   email: string;
   avatar: string;
+  status: string;
+  followers?: IFollows[];
+  following?: IFollows[];
 }
-export const UserContext = createContext<{
-  user: IUser | null;
-  userSet: React.Dispatch<React.SetStateAction<IUser | null>>;
-} | null>(null);
+export const UserContext = createContext<{ userData: IUser | null } | null>(
+  null
+);
+export const useUserContext = (): { userData: IUser | null } =>
+  useContext(UserContext)!;
 
 function MyApp({ Component, pageProps }: MyAppProps) {
   useEffect(() => {
     (document.querySelector('body') as HTMLElement).classList.add('m-0');
   }, []);
 
+  let userData: IUser | null = null;
+
+  if (process.browser && localStorage.getItem('user')) {
+    userData = JSON.parse(localStorage.getItem('user')!);
+    const timeOfLogin: number = JSON.parse(
+      localStorage.getItem('timeOfLogin')!
+    ) as number;
+    if (timeOfLogin < new Date().getTime()) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('timeOfLogin');
+      userData = null;
+      router.push('/login');
+    }
+  }
+  console.log(userData, "user's info");
+
   const Layout = Component.layout || MainLayout;
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
-
-  if (process.browser && localStorage.token) {
-    setJWTinAxios(localStorage.token);
-    // userSet
-  }
-
-  const [user, userSet] = useState<IUser | null>(null);
-
-  const props = { user, userSet };
 
   return (
     <>
@@ -67,8 +84,8 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       </Head>
       <QueryClientProvider client={queryClient}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <ToastContainer></ToastContainer>;
-        <UserContext.Provider value={props}>
+        <UserContext.Provider value={{ userData }}>
+          <ToastContainer></ToastContainer>;
           <Layout> {getLayout(<Component {...pageProps} />)}</Layout>
         </UserContext.Provider>
         <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>

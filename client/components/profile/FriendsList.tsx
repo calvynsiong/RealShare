@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import { useUserContext } from '../../pages/_app';
 
 interface Props {
   showFriends: boolean;
@@ -21,7 +22,10 @@ const customStyles = {
 };
 
 const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
-  console.log(showFriends);
+  const { userData } = useUserContext();
+  const { following, followers } = userData!;
+  const friends = datatype === 'following' ? following : followers;
+  console.log(friends);
   return (
     <section className='mt-14 top-4 outline-[red]'>
       <Modal
@@ -56,15 +60,18 @@ const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
         </button>
         <h1 className='text-center'>{datatype}</h1>
         <ul>
-          {new Array(10).fill(0).map((_, index) => (
-            <li key={index} className='flex items-center justify-between mt-5'>
+          {friends?.map(({ id, username, avatar }) => (
+            <li key={id} className='flex items-center justify-between mt-5'>
               <div className='flex gap-4'>
                 <img
-                  src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                  alt=''
+                  src={
+                    `${avatar}` ??
+                    `https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500`
+                  }
+                  alt={username}
                   className='w-9 h-9 rounded-full object-cover'
                 />
-                <span className='font-semibold'>John Keller</span>
+                <span className='font-semibold'>{username}</span>
               </div>
               <button className='flex rounded-3xl cursor-pointer p-3 bg-blue-500 text-white'>
                 Profile

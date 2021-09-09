@@ -5,7 +5,6 @@ import { useLoginUserQ } from '../../queries/authQ';
 
 import { capitalize } from '../../utils/functions';
 import { useRouter } from 'next/router';
-import { UserContext } from '../../pages/_app';
 
 const LoginForm = () => {
   interface ILoginInfo {
@@ -21,9 +20,6 @@ const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState(initialState);
   const { email, password } = loginInfo;
 
-  const { user, userSet } = useContext(UserContext)!;
-
-  console.log('user', user);
   const textFields = [
     { field: email, name: 'email', placeholder: 'Enter your email' },
     {
@@ -40,13 +36,15 @@ const LoginForm = () => {
     };
     setLoginInfo(newData);
   };
-  const { mutateAsync: login } = useLoginUserQ();
+  const { data: userId, mutateAsync: login } = useLoginUserQ();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await login({ info: { email, password }, userSet });
-    router.push('/profile/2');
+    await login({ info: { email, password } });
+    const id = userId ?? JSON.parse(localStorage.user)?._id;
+    console.log(id, 'fetchedId');
+    await router.push(`/profile/${id}`);
   };
 
   const buttonClass =

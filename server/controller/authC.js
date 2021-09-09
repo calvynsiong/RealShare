@@ -32,14 +32,19 @@ exports.registerUser = asyncHandler(async (req, res) => {
 // *Desc: login existing user
 exports.loginUser = asyncHandler(async (req, res, next) => {
   let userData = sanitizer(['email', 'password'], req.body);
-  const [user, token] = await loginUser_DB(userData);
-  res.cookie('jwt', token, {
-    httpOnly: true,
-    sameSite: 'lax',
-  });
+  try {
+    const [user, token] = await loginUser_DB(userData);
+    console.log('user is logged in');
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+    });
 
-  return responseHandler(
-    { statusCode: 200, payload: { user, token }, message: 'User logged in' },
-    res
-  );
+    return responseHandler(
+      { statusCode: 200, payload: { user, token }, message: 'User logged in' },
+      res
+    );
+  } catch (err) {
+    console.log(err);
+  }
 });

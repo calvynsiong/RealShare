@@ -11,8 +11,12 @@ import Photos from '../../components/profile/Photos';
 import { GetStaticPaths, GetServerSideProps } from 'next';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
 import Loader from 'react-loader-spinner';
+import { IUser, useUserContext } from '../_app';
+import { useGetUserByIdQ } from './../../queries/authQ';
+import axios from 'axios';
 
 export type IProfileContext = {
+  fetchedUser: IUser;
   showFriends: boolean;
   openFriends: (type: string) => void;
   closeFriends: () => void;
@@ -26,12 +30,14 @@ interface Props {
   pid: string;
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let token = context.req.cookies.jwt;
-  console.log(token, 'cookies');
   const { params } = context;
   const pid = params!.pid;
+
   return {
-    props: { pid, defaultImg: process.env.REACT_APP_DEFAULT_IMG_SOURCE },
+    props: {
+      pid,
+      defaultImg: process.env.REACT_APP_DEFAULT_IMG_SOURCE,
+    },
   };
 };
 
@@ -45,18 +51,21 @@ const Profile = ({ pid, defaultImg }: Props) => {
   };
   const closeFriends = (): void => setShowFriends(false);
 
-  const router = useRouter();
   const [token, loaded] = useProtectedRoute();
-  console.log(token, loaded, 'token');
 
+  const { userData } = useUserContext() ?? {};
+  const { _id } = userData ?? {};
+  const { data: fetchedUser } = useGetUserByIdQ(_id!);
+  console.log(fetchedUser, 'fetchedUser');
   const profileContext: IProfileContext = {
+    fetchedUser,
     showFriends,
     openFriends,
     closeFriends,
     datatype,
   };
-  console.log(token);
-  return !token ? (
+
+  return !token || !loaded ? (
     Loader
   ) : (
     <ProfileContext.Provider value={profileContext}>
@@ -66,7 +75,8 @@ const Profile = ({ pid, defaultImg }: Props) => {
   );
 };
 
-export const useProfileContext = () => useContext(ProfileContext);
+export const useProfileContext = (): IProfileContext =>
+  useContext(ProfileContext)!;
 
 // Profile.layout = Fragment;
 

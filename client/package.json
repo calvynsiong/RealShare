@@ -1,7 +1,9 @@
 {
   "private": true,
+  "proxy": "http://localhost:5000",
   "scripts": {
-    "dev": "rm .next/cache -rf && next  dev -p 3000",
+    "dev": "next  dev -p 3000",
+    "fastDev": "next -p 3000",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc"

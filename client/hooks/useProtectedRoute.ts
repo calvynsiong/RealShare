@@ -1,24 +1,27 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import setJWTinAxios from '../utils/setJWTinAxios';
+import {} from '../pages/_app';
+// import { useGetUserQ } from './../queries/authQ';
 
 const useProtectedRoute = (): [string | null, boolean] => {
   const router = useRouter();
   const [loaded, setLoaded] = useState(false);
   const [token, setToken] = useState<string | null>(null);
-  console.log('test', process);
+  // const [user, setUser] = useState<string | null>(null);
   useEffect(() => {
     if (process.browser) {
-      console.log(localStorage.getItem('token'));
-      if (localStorage.token) {
-        console.log(localStorage.token, 'exists');
+      console.log('axios verification start');
+      if (localStorage.token && localStorage.user ) {
         setToken(() => localStorage.token);
+        setJWTinAxios(localStorage.token);
         setLoaded(() => true);
         return;
       }
 
       router.push('/login');
     }
-  }, [process.browser, token, loaded]);
+  }, []);
   return [token, loaded];
 };
 

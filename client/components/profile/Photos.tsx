@@ -7,7 +7,6 @@ const PhotoWrapper = styled.div``;
 // const
 
 const Photos = ({ defaultImg }: { defaultImg: string }) => {
-  console.log(defaultImg);
   const LoadingPhotos = new Array(10)
     .fill(1)
     .map((_, i) => <Skeleton key={i} />);

@@ -66,6 +66,8 @@ const Navbar = () => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('timeOfLogin');
     router.push('/login');
   };
   return token && loaded ? (
