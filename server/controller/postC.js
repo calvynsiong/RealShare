@@ -124,6 +124,7 @@ exports.getFeedPosts = asyncHandler(async (req, res, next) => {
       res
     );
   } catch (err) {
+    console.log(err);
     return responseHandler(
       {
         statusCode: 500,
@@ -201,6 +202,8 @@ exports.commentOnPost = asyncHandler(async (req, res, next) => {
     );
   }
 });
+
+// !Route : GET /api/v1/post//likeOrUnlike/:postId
 exports.handleLikeAndDislikePost = asyncHandler(async (req, res, next) => {
   try {
     const { userId } = req.body;

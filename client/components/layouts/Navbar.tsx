@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Search, Person, Notifications } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
+import { useUserContext } from '../../pages/_app';
 
 const Logo = styled.div`
   flex: 2;
@@ -62,7 +63,8 @@ const IconList = [
 
 const Navbar = () => {
   const router = useRouter();
-  const [token, loaded] = useProtectedRoute();
+  const { setUserData, userData, allUsers } = useUserContext()!;
+  const [token, loaded] = useProtectedRoute(setUserData, userData!);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -96,14 +98,7 @@ const Navbar = () => {
             Logout
           </span>
         </NavLinks>
-        {/* <NavIcons className='flex justify-around gap-4'>
-          {IconList.map((icon, index) => (
-            <IconWrapper className='flex cursor-pointer relative' key={index}>
-              {icon.children}
-            </IconWrapper>
-          ))}
-        </NavIcons> */}
-        <Link href='/profile/2'>
+        <Link href={`/profile/${userData?._id}`}>
           <img
             className='h-8 rounded-full cursor-pointer'
             src='https://avatars.dicebear.com/api/gridy/:seed.svg'

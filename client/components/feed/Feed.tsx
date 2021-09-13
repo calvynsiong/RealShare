@@ -1,20 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 // components
 import UploadBar from './UploadBar';
 import Post from '../post/Post';
+import { useUserContext } from './../../pages/_app';
+import { PostActEnums } from '../../utils/reducers';
+import axios from 'axios';
 
 const FeedContainer = styled.div``;
 
 const Feed = () => {
+  const { userData, postDispatch, postState } = useUserContext();
+  const { feedPosts } = postState;
+  console.log(feedPosts, 'feed');
+  useEffect(() => {
+    const fetchFeed = async () => {
+      if (!userData) return;
+      const { data } = await axios.get(`/api/v1/post/feed/${userData._id}`);
+      postDispatch({
+        type: PostActEnums.GET_FEED,
+        payload: data.dataPayload.feedPosts,
+      });
+    };
+    fetchFeed();
+  }, []);
   return (
     <div style={{ flex: 5 }}>
       <FeedContainer>
         <UploadBar />
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
+        {feedPosts?.map?.((item) => (
+          <Post post={item} postArray={feedPosts} />
+        ))}
       </FeedContainer>
     </div>
   );

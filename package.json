@@ -6,8 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm run dev --prefix client",
+    "altClient": "npm run fastDev --prefix client",
     "server": "npm run dev --prefix server",
-    "dev": "concurrently \"npm run client\"  \"npm run server\""
+    "dev": "concurrently \"npm run client\"  \"npm run server\"",
+    "altDev": "concurrently \"npm run altClient\"  \"npm run server\""
   },
   "repository": {
     "type": "git",

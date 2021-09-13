@@ -21,6 +21,7 @@ const PostSchema = new mongoose.Schema(
       default: '',
     },
     userId: {
+      _id: false,
       type: mongoose.Types.ObjectId,
       required: true,
       ref: 'users',
@@ -37,6 +38,7 @@ const PostSchema = new mongoose.Schema(
     ],
     comments: [
       {
+        _id: false,
         text: String,
         userId: { type: mongoose.Types.ObjectId, ref: 'users' },
       },

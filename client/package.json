@@ -2,7 +2,7 @@
   "private": true,
   "proxy": "http://localhost:5000",
   "scripts": {
-    "dev": "next  dev -p 3000",
+    "dev": "next dev -p 3000",
     "fastDev": "next -p 3000",
     "build": "next build",
     "start": "next start",
@@ -28,6 +28,7 @@
     "react-select": "^4.3.1",
     "react-toastify": "^8.0.2",
     "styled-components": "^5.3.1",
+    "swr": "^1.0.0",
     "tailwindcss": "^2.2.8"
   },
   "devDependencies": {

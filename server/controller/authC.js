@@ -46,5 +46,9 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     );
   } catch (err) {
     console.log(err);
+    return responseHandler(
+      { statusCode: 404, payload: { err }, message: 'Login Failed' },
+      res
+    );
   }
 });

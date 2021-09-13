@@ -126,9 +126,8 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
   }
 
   const user = await getUser_DB(userId);
-  const peopleImFollowing = user.following.map((entry) =>
-    entry.user.toString()
-  );
+  console.log(user);
+  const peopleImFollowing = user.following.map((entry) => entry.id);
   // ! Only if trying to follow and checks if main user is already following
   if (action === 'follow' && peopleImFollowing.includes(id)) {
     responseHandler(

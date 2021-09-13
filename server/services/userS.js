@@ -11,15 +11,16 @@ exports.getAllUsers_DB = async () => {
   // .exec();
   return users;
 };
+
 const cleanUpEmptyFollowers = async (userId) => {
   // Gets all valid ids
   const users = await UserM.find({ status: DOCUMENT_STATUS.ACTIVE });
   const allIds = users.map((user) => user._id.toString());
   // Obtains users + following/followers
   const mainUser = await UserM.findById(userId);
-
-  const followers = mainUser.followers.map((entry) => entry.user.toString());
-  const following = mainUser.following.map((entry) => entry.user.toString());
+  console.log(userId, mainUser);
+  const followers = mainUser?.followers.map?.((entry) => entry.user.toString());
+  const following = mainUser?.following.map?.((entry) => entry.user.toString());
   // Removes follower id if none-existent in db
   for (const id of followers) {
     if (!allIds.includes(id)) {

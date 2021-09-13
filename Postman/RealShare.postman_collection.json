@@ -1,0 +1,515 @@
+{
+  "info": {
+    "_postman_id": "8e07b707-9e94-4f33-9d5b-7ad6522abf1b",
+    "name": "RealShare",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":\"Calvyn3\",\r\n    \"email\":\"calvyn3603@gmail.com\",\r\n    \"password\":\"password\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/register",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"doholo@mailinator.com\",\r\n    \"password\":\"password12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Update user",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": " {\r\n            \"_id\": \"6133ccbb8de44b557e858a8a\",\r\n            \"username\": \"Put next Calvyn\",\r\n            \"password\": \"123456789\",\r\n            \"email\": \"calvyn360@gmail.com\",\r\n            \"avatar\": \"https://avatars.dicebear.com/api/gridy/:oaeqnn.svg\",\r\n            \"isAdmin\": true\r\n\r\n        }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/update/6133ccbb8de44b557e858a8a",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "update",
+                "6133ccbb8de44b557e858a8a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/find/6133ccbb8de44b557e858a8a",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "user", "find", "6133ccbb8de44b557e858a8a"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isAdmin\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/find/6133ccbb8de44b557e858a8a",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "user", "find", "6133ccbb8de44b557e858a8a"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isAdmin\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/all",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "user", "all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Follow another user",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\":\"6133ccbb8de44b557e858a8a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/follow/61377b620f953853ba4bd495",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "follow",
+                "61377b620f953853ba4bd495"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unfollow user",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\":\"6133ccbb8de44b557e858a8a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/user/unfollow/6133e16dd191b666dc561106",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "unfollow",
+                "6133e16dd191b666dc561106"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Get My Posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/post/myPosts/61354de2d31865c68b29bd82",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "post",
+                "myPosts",
+                "61354de2d31865c68b29bd82"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get single post",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/post/single/613550ae074bb63745a55315",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "post",
+                "single",
+                "613550ae074bb63745a55315"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Posts Copy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/post/all",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "post", "all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get feed posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/post/feed/6133ccbb8de44b557e858a8a",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "post", "feed", "6133ccbb8de44b557e858a8a"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"img\":\"https://res.cloudinary.com/spedwagon/image/upload/v1630858709/p8i3f3b2a6cgqifzilx2.jpg\",\r\n    \"desc\":\"First Post\",\r\n    \"userId\":\"61354de2d31865c68b29bd82\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/post/create",
+              "host": ["{{URL}}"],
+              "path": ["api", "v1", "post", "create"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"text\":\"Hello World\",\r\n    \"userId\":\"61354de2d31865c68b29bd82\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/post/comment/613559d2e3e740752c264909",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "post",
+                "comment",
+                "613559d2e3e740752c264909"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Like/Unlike Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\":\"61354de2d31865c68b29bd82\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/post/likeOrUnlike/613559d2e3e740752c264909",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "post",
+                "likeOrUnlike",
+                "613559d2e3e740752c264909"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN2}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\":\"6133ccbb8de44b557e858a8a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/post/delete/613559d2e3e740752c264909",
+              "host": ["{{URL}}"],
+              "path": [
+                "api",
+                "v1",
+                "post",
+                "delete",
+                "613559d2e3e740752c264909"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Image Upload",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/C:/Users/calvy/OneDrive/Pictures/319923.jpg"
+            },
+            {
+              "key": "upload_preset",
+              "value": "realshare",
+              "type": "text"
+            },
+            {
+              "key": "cloud_name",
+              "value": "spedwagon",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://api.cloudinary.com/v1_1/spedwagon/image/upload",
+          "protocol": "https",
+          "host": ["api", "cloudinary", "com"],
+          "path": ["v1_1", "spedwagon", "image", "upload"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

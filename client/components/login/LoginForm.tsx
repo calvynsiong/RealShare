@@ -41,10 +41,13 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await login({ info: { email, password } });
-    const id = userId ?? JSON.parse(localStorage.user)?._id;
-    console.log(id, 'fetchedId');
-    await router.push(`/profile/${id}`);
+    try {
+      await login({ info: { email, password } });
+      const id = userId ?? JSON.parse(localStorage.user)?._id;
+      await router.push(`/profile/${id}`);
+    } catch (error: any) {
+      console.log(error?.message);
+    }
   };
 
   const buttonClass =
