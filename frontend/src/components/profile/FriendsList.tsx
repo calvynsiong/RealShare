@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { useProfileContext } from '../../pages/profile/Profile';
-import { useUserContext } from '../../pages/App';
+import { useUserContext } from '../../App';
 
 interface Props {
   showFriends: boolean;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { useUserContext } from './../../pages/App';
+import { useUserContext } from '../../App';
 import { IPost, PostActEnums } from './../../utils/reducers';
 import { errorToast } from '../../utils/toasts';
 import axios from 'axios';

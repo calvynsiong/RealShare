@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IPost } from './../../utils/reducers';
 
@@ -17,7 +18,7 @@ const PostTop = ({
 >) => {
   return (
     <Header className='flex border-b items-center border-gray-primary h-4 p-4 py-10'>
-      <a href={`/profile/${_id}`}>
+      <Link to={`/profile/${_id}`}>
         <div className=' cursor-pointer flex justify-center items-center mr-8'>
           <img
             className='rounded-full h-8 w-8 flex mr-3'
@@ -26,7 +27,7 @@ const PostTop = ({
           />
           <p className='font-bold m-0 text-2xl'>{username}</p>
         </div>
-      </a>
+      </Link>
       {location?.map?.((loc, index) => (
         <LocationBadge
           key={index}

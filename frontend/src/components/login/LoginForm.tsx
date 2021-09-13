@@ -1,5 +1,5 @@
 import React, { ChangeEvent, Fragment, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useLoginUserQ } from '../../queries/authQ';
 // components
 
@@ -83,7 +83,7 @@ const LoginForm = () => {
           >
             Login
           </button>
-          <a href='/register'>
+          <Link to='/register'>
             <button
               disabled={false}
               type='submit'
@@ -92,10 +92,10 @@ const LoginForm = () => {
             >
               Don't have an account yet? Sign up!
             </button>
-          </a>
-          <a href='/'>
+          </Link>
+          <Link to='/'>
             <p className='text-center text-[#1775ee] mt-2'>Forgot password?</p>
-          </a>
+          </Link>
         </form>
       </div>
     </article>

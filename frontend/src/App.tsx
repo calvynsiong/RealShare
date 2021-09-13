@@ -1,4 +1,4 @@
-import '../index.css';
+import './styles/index.css';
 // libraries
 import React, { useContext, useMemo, useReducer, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -9,13 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 // types
 import axios from 'axios';
 import { createContext } from 'react';
-import { BASE_URL } from '../utils/constants';
+import { BASE_URL } from './utils/constants';
 import {
   PostActions,
   initialPostsState,
   IPostState,
   postReducer,
-} from '../utils/reducers';
+} from './utils/reducers';
 
 import {
   BrowserRouter as Router,
@@ -23,10 +23,10 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import Profile from './profile/Profile';
-import Home from './home/Home';
-import Register from './register/Register';
-import Login from './login/LoginPage';
+import Profile from './pages/profile/Profile';
+import Home from './pages/home/Home';
+import Register from './pages/register/Register';
+import Login from './pages/login/LoginPage';
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -71,6 +71,7 @@ function App() {
   const [postState, postDispatch] = useReducer(postReducer, initialPostsState);
 
   axios.defaults.baseURL = BASE_URL;
+  const user = localStorage.getItem('user');
   const globalContext = useMemo(
     () => ({
       userData,
@@ -90,13 +91,13 @@ function App() {
         <Router>
           <Switch>
             <Route exact path='/'>
-              {userData ? <Home /> : <Register />}
+              {user ? <Home /> : <Register />}
             </Route>
             <Route path='/login'>
-              {userData ? <Redirect to='/' /> : <Login />}
+              {user ? <Redirect to='/' /> : <Login />}
             </Route>
             <Route path='/register'>
-              {userData ? <Redirect to='/' /> : <Register />}
+              {user ? <Redirect to='/' /> : <Register />}
             </Route>
             <Route exact path='/profile/:pid'>
               <Profile />

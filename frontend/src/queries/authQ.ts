@@ -1,6 +1,5 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { IUser } from '../pages/App';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
 

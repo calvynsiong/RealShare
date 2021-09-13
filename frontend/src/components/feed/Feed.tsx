@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // components
 import UploadBar from './UploadBar';
 import Post from '../post/Post';
-import { useUserContext } from './../../pages/App';
+import { useUserContext } from '../../App';
 import { PostActEnums } from '../../utils/reducers';
 import axios from 'axios';
 

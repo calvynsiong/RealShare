@@ -4,11 +4,11 @@ const SignUpLayout = ({ children }: { children: ReactChild }) => {
   return (
     <section className='container flex  flex-wrap md:flex-nowrap mx-auto items-center justify-center h-screen'>
       <div className='flex w-2/5 p-4'>
-        <img src={''} alt='RealShare SVG' />
+        <img src={Logo} alt='RealShare SVG' />
       </div>
       {/* width is 3/5 */}
       {children}
-      <img src={Logo} alt='Login logo'></img>
+      {/* <img src={Logo} alt='Login logo'></img> */}
     </section>
   );
 };

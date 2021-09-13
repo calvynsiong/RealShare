@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import setJWTinAxios from '../utils/setJWTinAxios';
-import { IUser } from '../pages/App';
+import { IUser } from '../App';
 import { useHistory } from 'react-router-dom';
 // import { useGetUserQ } from './../queries/authQ';
 

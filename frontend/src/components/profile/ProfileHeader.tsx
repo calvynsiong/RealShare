@@ -2,7 +2,7 @@ import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 import { useProfileContext } from '../../pages/profile/Profile';
 import FriendsList from './FriendsList';
-import { useUserContext } from './../../pages/App';
+import { useUserContext } from '../../App';
 
 const PhotoSection = styled.div``;
 const InfoSection = styled.div``;
