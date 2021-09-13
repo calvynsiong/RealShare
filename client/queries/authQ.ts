@@ -71,7 +71,7 @@ export const useLoginUserQ = () => {
 
 export const useGetUserByIdQ = (userId: string) => {
   return useQuery(
-    'user',
+    ['user', userId],
     () => {
       return axios
         .get(`/api/v1/user/find/${userId}`, {
@@ -82,8 +82,30 @@ export const useGetUserByIdQ = (userId: string) => {
         .then((res) => res.data.dataPayload.user);
     },
     {
-      cacheTime: minutesToMs(100),
-      staleTime: minutesToMs(100),
+      cacheTime: minutesToMs(200),
+      staleTime: minutesToMs(200),
+      retry: false,
+
+      onError: (err: string) => errorToast(err),
+    }
+  );
+};
+export const useGetAllUsersQ = () => {
+  return useQuery(
+    'allUsers',
+    () => {
+      return axios
+        .get(`/api/v1/user/all/`, {
+          headers: {
+            withCredentials: true,
+          },
+        })
+        .then((res) => res.data.dataPayload.users);
+    },
+    {
+      cacheTime: minutesToMs(200),
+      staleTime: minutesToMs(200),
+      retry: false,
 
       onError: (err: string) => errorToast(err),
     }

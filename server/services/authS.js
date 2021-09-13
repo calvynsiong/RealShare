@@ -15,7 +15,6 @@ exports.createUser_DB = async (userData) => {
     // An array is created an the first entry is the new user
     const user = (
       await UserM.create([userData], { session }).catch((err) => {
-        console.log(err?.code);
         if (err.code === 11000) {
           throw new ErrorResponse(`User Already exists`, 400);
         } else {
@@ -25,7 +24,6 @@ exports.createUser_DB = async (userData) => {
     )[0];
     // Session has to be saved for the data to be returned
     await user.save({ session });
-    console.log(user);
     await session.commitTransaction();
     session.endSession();
     return user;
@@ -45,17 +43,20 @@ exports.loginUser_DB = async (userData) => {
     }
     let userInfo = user._doc;
     const followers = await UserM.find({
-      $in: user.followers.map((entry) => entry.user.toString()),
+      _id: {
+        $in: user.followers.map((entry) => entry.user),
+      },
     });
     const following = await UserM.find({
-      $in: user.following.map((entry) => entry.user.toString()),
+      _id: {
+        $in: user.following.map((entry) => entry.user),
+      },
     });
     userInfo = {
       ...userInfo,
       followers: mapUserInfo(followers),
       following: mapUserInfo(following),
     };
-    console.log(userInfo, 'altered');
 
     // Normal password then HASHED one
     const passwordMatch = await bcrypt.compare(password, user.password);

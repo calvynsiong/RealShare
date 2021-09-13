@@ -75,10 +75,14 @@ exports.getUser_DB = async (id) => {
   await cleanUpEmptyFollowers(id);
   let { password, updatedAt, ...userData } = user._doc;
   const followers = await UserM.find({
-    $in: userData.followers.map((entry) => entry.user.toString()),
+    _id: {
+      $in: userData.followers.map((entry) => entry.user),
+    },
   });
   const following = await UserM.find({
-    $in: userData.following.map((entry) => entry.user.toString()),
+    _id: {
+      $in: userData.following.map((entry) => entry.user),
+    },
   });
   userData.followers = mapUserInfo(followers);
   userData.following = mapUserInfo(following);
