@@ -1,7 +1,14 @@
 // styles
 import '../styles/index.css';
 // libraries
-import React, { ReactNode, useContext, useEffect } from 'react';
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Head from 'next/head';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -14,19 +21,27 @@ import MainLayout from '../components/layouts/MainLayout';
 import type { AppProps } from 'next/app';
 import { Page } from '../types/page';
 import axios from 'axios';
-import router, { useRouter } from 'next/router';
+import router from 'next/router';
 import { createContext } from 'react';
+import { BASE_URL } from '../utils/constants';
+import {
+  PostActions,
+  initialPostsState,
+  IPostState,
+  postReducer,
+  PostActEnums,
+} from '../utils/reducers';
 
 type MyAppProps<P = {}> = AppProps<P> & {
   Component: Page<P>;
   user?: string | null;
 };
 
-axios.defaults.baseURL =
-  process.env.REACT_APP_BACKEND_URL ?? 'https/localhost:5000';
+axios.defaults.baseURL = BASE_URL;
 
 const queryClient = new QueryClient();
 
+// * Interfaces
 interface IFollows {
   id: string;
   username: string;
@@ -41,34 +56,55 @@ export interface IUser {
   status: string;
   followers?: IFollows[];
   following?: IFollows[];
+  location?: string[];
+  tags?: string[];
 }
-export const UserContext = createContext<{ userData: IUser | null } | null>(
-  null
-);
-export const useUserContext = (): { userData: IUser | null } =>
-  useContext(UserContext)!;
+interface IUserContext {
+  userData: IUser | null;
+  allUsers: IUser[] | null;
+  setUserData: React.Dispatch<React.SetStateAction<IUser | null>>;
+  setAllUsers: React.Dispatch<React.SetStateAction<IUser[] | null>>;
+  postState: IPostState;
+  postDispatch: React.Dispatch<PostActions>;
+}
+
+//  * Context
+export const UserContext = createContext<IUserContext | null>(null);
+export const useUserContext = (): IUserContext => useContext(UserContext)!;
 
 function MyApp({ Component, pageProps }: MyAppProps) {
   useEffect(() => {
     (document.querySelector('body') as HTMLElement).classList.add('m-0');
   }, []);
 
-  let userData: IUser | null = null;
+  //  * State
 
-  if (process.browser && localStorage.getItem('user')) {
-    userData = JSON.parse(localStorage.getItem('user')!);
-    const timeOfLogin: number = JSON.parse(
-      localStorage.getItem('timeOfLogin')!
-    ) as number;
-    if (timeOfLogin < new Date().getTime()) {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('timeOfLogin');
-      userData = null;
-      router.push('/login');
-    }
-  }
-  console.log(userData, "user's info");
+  const [userData, setUserData] = useState<IUser | null>(null);
+  const [allUsers, setAllUsers] = useState<IUser[] | null>(null);
+  const [postState, postDispatch] = useReducer(postReducer, initialPostsState);
+
+  axios.defaults.baseURL = BASE_URL;
+  const globalContext = useMemo(
+    () => ({
+      userData,
+      allUsers,
+      setUserData,
+      setAllUsers,
+      postState,
+      postDispatch,
+    }),
+    [userData, allUsers, setUserData, setAllUsers, postState, postDispatch]
+  );
+  useEffect(() => {
+    const fetchAllPosts = async () => {
+      const res = await axios.get('/api/v1/post/all');
+      const allPosts = res.data.dataPayload.allPosts;
+      postDispatch({
+        type: PostActEnums.GET_ALL_POSTS,
+        payload: allPosts,
+      });
+    };
+  }, [postState?.allPosts]);
 
   const Layout = Component.layout || MainLayout;
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
@@ -82,9 +118,9 @@ function MyApp({ Component, pageProps }: MyAppProps) {
           content='width=device-width, initial-scale=1, maximum-scale=1'
         />
       </Head>
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient} contextSharing>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <UserContext.Provider value={{ userData }}>
+        <UserContext.Provider value={globalContext}>
           <ToastContainer></ToastContainer>;
           <Layout> {getLayout(<Component {...pageProps} />)}</Layout>
         </UserContext.Provider>

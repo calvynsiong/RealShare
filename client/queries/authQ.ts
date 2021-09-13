@@ -4,8 +4,6 @@ import { IUser } from '../pages/_app';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
 
-axios.defaults.baseURL = 'http://localhost:5000';
-
 interface IRegisterInfo {
   email: string;
   password: string;
@@ -64,7 +62,9 @@ export const useLoginUserQ = () => {
         );
         successToast('Successfully logged in');
       },
-      onError: async () => errorToast('Login Failed'),
+      onError: (err: string) => {
+        errorToast('Login failed!' ?? err);
+      },
     }
   );
 };

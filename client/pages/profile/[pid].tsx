@@ -1,6 +1,6 @@
 import React, {
   createContext,
-  Fragment,
+  useMemo,
   useContext,
   useEffect,
   useState,
@@ -43,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Profile = ({ pid, defaultImg }: Props) => {
   // console.log(token);
+  const { setUserData, userData } = useUserContext();
   const [showFriends, setShowFriends] = useState<boolean>(false);
   const [datatype, setDatatype] = useState<string>('followers');
   const openFriends = (type: string): void => {
@@ -51,21 +52,22 @@ const Profile = ({ pid, defaultImg }: Props) => {
   };
   const closeFriends = (): void => setShowFriends(false);
 
-  const [token, loaded] = useProtectedRoute();
+  const [token, loaded] = useProtectedRoute(setUserData, userData!);
 
-  const { userData } = useUserContext() ?? {};
-  const { _id } = userData ?? {};
-  const { data: fetchedUser } = useGetUserByIdQ(_id!);
+  const { data: fetchedUser } = useGetUserByIdQ(pid);
   console.log(fetchedUser, 'fetchedUser');
-  const profileContext: IProfileContext = {
-    fetchedUser,
-    showFriends,
-    openFriends,
-    closeFriends,
-    datatype,
-  };
+  const profileContext: IProfileContext = useMemo(
+    () => ({
+      fetchedUser,
+      showFriends,
+      openFriends,
+      closeFriends,
+      datatype,
+    }),
+    [fetchedUser, showFriends, openFriends, closeFriends, datatype]
+  );
 
-  return !token || !loaded ? (
+  return !token || !loaded || !fetchedUser ? (
     Loader
   ) : (
     <ProfileContext.Provider value={profileContext}>
@@ -77,7 +79,5 @@ const Profile = ({ pid, defaultImg }: Props) => {
 
 export const useProfileContext = (): IProfileContext =>
   useContext(ProfileContext)!;
-
-// Profile.layout = Fragment;
 
 export default Profile;

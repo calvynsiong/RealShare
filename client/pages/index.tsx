@@ -1,14 +1,17 @@
 import Link from 'next/link';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 // components
 import SideBar from '../components/layouts/Sidebar';
-import RightBar from '../components/layouts/RightBar';
+import axios from 'axios';
 import Feed from '../components/feed/Feed';
 import useProtectedRoute from '../hooks/useProtectedRoute';
+import { useUserContext } from './_app';
 
 const Home = () => {
-  const [token, loaded] = useProtectedRoute();
+  const { setUserData, userData } = useUserContext();
+
+  const [token, loaded] = useProtectedRoute(setUserData, userData!);
   return (
     token &&
     loaded && (

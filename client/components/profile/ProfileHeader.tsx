@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { UserContext } from '../../pages/_app';
 import { useProfileContext } from './../../pages/profile/[pid]';
 import FriendsList from './FriendsList';
+import { useUserContext } from './../../pages/_app';
 
 const PhotoSection = styled.div``;
 const InfoSection = styled.div``;
@@ -11,7 +12,7 @@ const NameSection = styled.div``;
 const Statistic = styled.div``;
 
 const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
-  const { userData } = useContext(UserContext)!;
+  const { userData } = useUserContext();
   const { fetchedUser, showFriends, closeFriends, openFriends, datatype } =
     useProfileContext()!;
   const listProps = {
@@ -23,6 +24,7 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
 
   const isAnotherProfile = userData?._id !== _id;
+  console.log(userData?._id, _id, 'anotherProfile');
 
   console.log(userData, 'user');
 

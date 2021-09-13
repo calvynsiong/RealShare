@@ -1,5 +1,7 @@
+import Link from 'next/link';
 import React from 'react';
 import Modal from 'react-modal';
+import { useProfileContext } from '../../pages/profile/[pid]';
 import { useUserContext } from '../../pages/_app';
 
 interface Props {
@@ -22,8 +24,8 @@ const customStyles = {
 };
 
 const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
-  const { userData } = useUserContext();
-  const { following, followers } = userData!;
+  const { fetchedUser } = useProfileContext();
+  const { following, followers } = fetchedUser!;
   const friends = datatype === 'following' ? following : followers;
   console.log(friends);
   return (
@@ -73,9 +75,11 @@ const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
                 />
                 <span className='font-semibold'>{username}</span>
               </div>
-              <button className='flex rounded-3xl cursor-pointer p-3 bg-blue-500 text-white'>
-                Profile
-              </button>
+              <Link href={`/profile/${id}`} >
+                <button className='flex rounded-3xl cursor-pointer p-3 bg-blue-500 text-white' onClick={closeFriends}>
+                  Profile
+                </button>
+              </Link>
             </li>
           ))}
         </ul>
