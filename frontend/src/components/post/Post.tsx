@@ -13,12 +13,12 @@ const PostContainer = styled.article`
 const PostWrapper = styled.div``;
 
 interface Props {
-  post: IPost;
+  post?: IPost;
   postArray: IPost[];
 }
 
 const Post = ({ post, postArray }: Props) => {
-  const { _id, desc, img, location, tags, userId, likes } = post;
+  const { _id, img, location, tags, userId, likes } = post!;
 
   const { avatar, _id: user, username } = userId;
   const [isLiked, setLiked] = useState<boolean>(false);

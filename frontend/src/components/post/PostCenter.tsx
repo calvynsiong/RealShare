@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import InsertCommentIcon from '@material-ui/icons/InsertComment';
-import { useUserContext } from './../../pages/_app';
+import { useUserContext } from './../../pages/App';
 import { IPost, PostActEnums } from './../../utils/reducers';
 import { errorToast } from '../../utils/toasts';
 import axios from 'axios';
@@ -58,7 +57,7 @@ const PostCenter = ({
     <>
       <img
         src={`${img}??https://avatars.dicebear.com/api/gridy/:seed.svg`}
-        alt='post image'
+        alt='default'
         className='text-center  max-w-full object-cover block'
       ></img>
       <OptionsContainer className='flex justify-between p-4'>

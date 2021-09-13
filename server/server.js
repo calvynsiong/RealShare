@@ -18,13 +18,7 @@ dotenv.config({ path: './config/config.env' });
 const dev = process.env.NODE_ENV !== 'production';
 
 const PORT = process.env.PORT || 5000;
-// Init app
-// const app = next({ dir: '../client', dev });
-// const handle = app.getRequestHandler();
 
-// app
-//   .prepare()
-//   .then(() => {
 const server = express();
 // Enable CORS
 
@@ -78,8 +72,3 @@ server.listen(PORT, (err) => {
     `Backend server is in ${process.env.NODE_ENV} environment and running on ${PORT}`
   );
 });
-// })
-// .catch((err) => {
-//   console.error(err.stack);
-//   process.exit(1);
-// });

@@ -117,32 +117,38 @@ exports.commentOnPost_DB = async (comment, postId) => {
   return updatedPost;
 };
 exports.likeOrUnlikePost_DB = async (userId, postId) => {
-  console.log(userId, postId);
-  const post = await PostM.findOne({ _id: postId });
-  let updatedPost;
-  const postLikes = post.likes.map((like) => like.toString());
-  let action;
-  if (!post) {
-    throw new ErrorResponse('No post with this id exists', 404);
-  }
+  console.log(userId, postId, mongoose.Types.ObjectId(userId));
   // Unlikes if already liked
-  if (postLikes.includes(userId)) {
-    updatedPost = await populatePost(
-      PostM.findByIdAndUpdate(postId, {
-        $pull: { likes: userId },
-      })
-    );
-    action = 'disliked';
+  try {
+    const post = await PostM.findById(postId);
+    console.log(post, 'post', postId);
+    if (!post) {
+      throw new ErrorResponse('No post with this id exists', 404);
+    }
+    let updatedPost;
+    const postLikes = post.likes.map((like) => like.toString());
+    console.log(postLikes, 'postLikes');
+    let action;
+    if (postLikes.includes(userId)) {
+      updatedPost = await populatePost(
+        PostM.findByIdAndUpdate(postId, {
+          $pull: { likes: mongoose.Types.ObjectId(userId) },
+        })
+      );
+      action = 'disliked';
+    }
+    // Likes if not liked yet
+    else {
+      updatedPost = await populatePost(
+        PostM.findByIdAndUpdate(postId, {
+          $push: { likes: mongoose.Types.ObjectId(userId) },
+        })
+      );
+      action = 'liked';
+    }
+    console.log(post);
+    return [updatedPost, action];
+  } catch (error) {
+    throw new ErrorResponse(error, 500);
   }
-  // Likes if not liked yet
-  else {
-    updatedPost = await populatePost(
-      PostM.findByIdAndUpdate(postId, {
-        $push: { likes: userId },
-      })
-    );
-    action = 'liked';
-  }
-  console.log(post);
-  return [updatedPost, action];
 };

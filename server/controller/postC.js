@@ -13,6 +13,7 @@ const {
   likeOrUnlikePost_DB,
 } = require('../services/postS');
 const { sanitizer, removeNull } = require('../utils/requestCheck');
+const ErrorResponse = require('../utils/errorResponse');
 
 // !Route : POST /api/v1/post/create
 exports.createPost = asyncHandler(async (req, res, next) => {
@@ -212,18 +213,13 @@ exports.handleLikeAndDislikePost = asyncHandler(async (req, res, next) => {
     return responseHandler(
       {
         statusCode: 200,
-        msg: `Post ${updatedPost._id} has been ${action}`,
+        msg: `Post has been ${action}`,
         payload: { updatedPost },
       },
       res
     );
   } catch (error) {
-    return responseHandler(
-      {
-        statusCode: 500,
-        msg: error.message ?? error.toString(),
-      },
-      res
-    );
+    console.log(error);
+    throw new ErrorResponse(error ?? error.toString());
   }
 });

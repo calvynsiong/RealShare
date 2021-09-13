@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // components
 import UploadBar from './UploadBar';
 import Post from '../post/Post';
-import { useUserContext } from './../../pages/_app';
+import { useUserContext } from './../../pages/App';
 import { PostActEnums } from '../../utils/reducers';
 import axios from 'axios';
 
@@ -23,7 +23,7 @@ const Feed = () => {
       });
     };
     fetchFeed();
-  }, []);
+  }, [postDispatch, userData]);
   return (
     <div style={{ flex: 5 }}>
       <FeedContainer>
