@@ -1,6 +1,12 @@
-interface IBasicInfo {
+export interface IBasicInfo {
   _id: string;
   username: string;
+}
+
+export interface ICommentInfo {
+  text: string;
+  userId: IBasicInfo;
+  _id: string;
 }
 
 export interface IPost {
@@ -12,11 +18,7 @@ export interface IPost {
   userId: {
     avatar: string;
   } & IBasicInfo;
-  comments?: {
-    text: string;
-    userId: IBasicInfo;
-    _id: string;
-  }[];
+  comments?: ICommentInfo[];
   username?: string;
   tags?: string[];
   location?: string[];

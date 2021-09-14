@@ -36,7 +36,7 @@ const Profile = () => {
   const [token, loaded] = useProtectedRoute(setUserData, userData!);
 
   const { data: fetchedUser } = useGetUserByIdQ(pid);
-  console.log(fetchedUser, 'fetchedUser');
+
   const profileContext: IProfileContext = useMemo(
     () => ({
       fetchedUser,

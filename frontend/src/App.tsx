@@ -10,12 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { createContext } from 'react';
 import { BASE_URL } from './utils/constants';
-import {
-  PostActions,
-  initialPostsState,
-  IPostState,
-  postReducer,
-} from './utils/reducers';
+import { initialPostsState, postReducer } from './utils/reducers';
 
 import {
   BrowserRouter as Router,
@@ -27,6 +22,7 @@ import Profile from './pages/profile/Profile';
 import Home from './pages/home/Home';
 import Register from './pages/register/Register';
 import Login from './pages/login/LoginPage';
+import SinglePost from './pages/post/PostPage';
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -55,8 +51,8 @@ interface IUserContext {
   allUsers: IUser[] | null;
   setUserData: React.Dispatch<React.SetStateAction<IUser | null>>;
   setAllUsers: React.Dispatch<React.SetStateAction<IUser[] | null>>;
-  postState: IPostState;
-  postDispatch: React.Dispatch<PostActions>;
+  // postState: IPostState;
+  // postDispatch: React.Dispatch<PostActions>;
 }
 
 //  * Context
@@ -78,16 +74,16 @@ function App() {
       allUsers,
       setUserData,
       setAllUsers,
-      postState,
-      postDispatch,
+      // postState,
+      // postDispatch,
     }),
-    [userData, allUsers, setUserData, setAllUsers, postState, postDispatch]
+    [userData, allUsers, setUserData, setAllUsers]
   );
   return (
     <QueryClientProvider client={queryClient} contextSharing>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <UserContext.Provider value={globalContext}>
-        <ToastContainer></ToastContainer>;
+        <ToastContainer></ToastContainer>
         <Router>
           <Switch>
             <Route exact path='/'>
@@ -101,6 +97,9 @@ function App() {
             </Route>
             <Route exact path='/profile/:pid'>
               <Profile />
+            </Route>
+            <Route exact path='/post/:pid'>
+              <SinglePost />
             </Route>
           </Switch>
         </Router>

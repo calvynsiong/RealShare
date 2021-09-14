@@ -118,13 +118,13 @@ const RegisterForm = () => {
   console.log(invalid);
 
   return (
-    <article className='flex w-full md:w-3/5 flex-wrap m-4'>
-      <div className='flex flex-col items-center bg-white p-8 border border-gray-primary m-4 rounded'>
+    <article className='flex w-full md:w-3/5 flex-wrap m-4 my-20 max h-5/6'>
+      <div className='flex flex-col items-center bg-white p-4 px-8 border border-gray-primary m-4 -mt-10 rounded'>
         <h1 className='flex justify-center w-full'>Sign Up for RealShare</h1>
         <h6 className='flex justify-center w-full text-gray-500'>
           A social app made with TypeScript and React
         </h6>
-        <form onSubmit={handleSubmit}>
+        <form className='w-full min-h-0' onSubmit={handleSubmit}>
           {textFields.map(
             ({ field, name, placeholder, type, label }, index) => (
               <Fragment key={index}>

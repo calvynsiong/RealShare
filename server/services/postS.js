@@ -6,7 +6,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const populatePost = async (post) => {
   const populatedPost = await post
     .populate('userId', ['_id', 'username', 'avatar'])
-    .populate('comments.userId', ['_id', 'name'])
+    .populate('comments.userId', ['_id', 'username'])
     .populate('likes', ['_id', 'username'])
     .sort({ createdAt: -1 });
   return populatedPost;
@@ -103,17 +103,21 @@ exports.deletePost_DB = async (userId, postId) => {
   }
 };
 exports.commentOnPost_DB = async (comment, postId) => {
-  const updatedPost = await populatePost(
-    PostM.findByIdAndUpdate(
-      postId,
-      { $push: { comments: comment } },
-      { new: true }
-    )
-  )
-    .exec()
-    .catch((err) => {
-      throw err;
-    });
+  console.log(postId, typeof postId, comment.text);
+  try {
+    const updatedPost = await populatePost(
+      PostM.findOneAndUpdate(
+        { id: postId },
+        { $push: { comments: comment } },
+        { new: true }
+      )
+    );
+    return updatedPost;
+  } catch (error) {
+    console.log(error);
+    throw new ErrorResponse(error, 404);
+  }
+
   return updatedPost;
 };
 exports.likeOrUnlikePost_DB = async (userId, postId) => {
@@ -129,24 +133,23 @@ exports.likeOrUnlikePost_DB = async (userId, postId) => {
     const postLikes = post.likes.map((like) => like.toString());
     console.log(postLikes, 'postLikes');
     let action;
+    console.log(postLikes);
     if (postLikes.includes(userId)) {
-      updatedPost = await populatePost(
-        PostM.findByIdAndUpdate(postId, {
-          $pull: { likes: mongoose.Types.ObjectId(userId) },
-        })
-      );
+      await PostM.findByIdAndUpdate(postId, {
+        $pull: { likes: mongoose.Types.ObjectId(userId) },
+      });
+
       action = 'disliked';
     }
     // Likes if not liked yet
     else {
-      updatedPost = await populatePost(
-        PostM.findByIdAndUpdate(postId, {
-          $push: { likes: mongoose.Types.ObjectId(userId) },
-        })
-      );
+      await PostM.findByIdAndUpdate(postId, {
+        $push: { likes: mongoose.Types.ObjectId(userId) },
+      });
+
       action = 'liked';
     }
-    console.log(post);
+    updatedPost = await populatePost(PostM.findById(postId));
     return [updatedPost, action];
   } catch (error) {
     throw new ErrorResponse(error, 500);

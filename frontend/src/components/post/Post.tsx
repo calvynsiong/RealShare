@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import styled from 'styled-components';
 // components
 import Comments from './Comments';
@@ -6,22 +5,29 @@ import PostBottom from './PostBottom';
 import PostCenter from './PostCenter';
 import PostTop from './PostTop';
 import { IPost } from './../../utils/reducers';
+import { useUserContext } from '../../App';
+import React from 'react';
 
 const PostContainer = styled.article`
   max-width: 700px;
 `;
 const PostWrapper = styled.div``;
 
+export interface IComment {
+  text: string;
+  userId: string;
+}
 interface Props {
   post?: IPost;
-  postArray: IPost[];
+  handleLikeOrDislike?: (postId: string, userId: string) => void;
+  handlePostComment?: (postId: string, comment: IComment) => void;
 }
 
-const Post = ({ post, postArray }: Props) => {
-  const { _id, img, location, tags, userId, likes } = post!;
+const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
+  const { _id, img, location, tags, userId, likes, comments } = post!;
 
   const { avatar, _id: user, username } = userId;
-  const [isLiked, setLiked] = useState<boolean>(false);
+  const { userData } = useUserContext();
 
   return (
     <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-auto'>
@@ -35,19 +41,22 @@ const Post = ({ post, postArray }: Props) => {
         ></PostTop>
         <PostCenter
           likes={likes}
-          isLiked={isLiked}
-          setLiked={setLiked}
+          handleLikeOrDislike={handleLikeOrDislike}
           img={img}
           _id={_id}
           userId={user}
+          mainUserId={userData!._id!}
           username={username}
-          postArray={postArray}
         ></PostCenter>
-        <PostBottom></PostBottom>
-        <Comments></Comments>
+        <Comments
+          handlePostComment={handlePostComment}
+          comments={comments!}
+          userId={userData!._id!}
+          postId={_id}
+        ></Comments>
       </PostWrapper>
     </PostContainer>
   );
 };
 
-export default Post;
+export default React.memo(Post);

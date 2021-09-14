@@ -183,8 +183,10 @@ exports.getSinglePost = asyncHandler(async (req, res, next) => {
 exports.commentOnPost = asyncHandler(async (req, res, next) => {
   try {
     const { text, userId } = req.body;
+    const comment = { text, userId };
     const { postId } = req.params;
-    const updatedPost = await commentOnPost_DB({ text, userId }, postId);
+    console.log(req.body, comment);
+    const updatedPost = await commentOnPost_DB(comment, postId);
     return responseHandler(
       {
         statusCode: 200,

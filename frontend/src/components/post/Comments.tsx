@@ -1,14 +1,32 @@
 import React, { Fragment, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // utils
 import { shorten } from '../../utils/functions';
+import { ICommentInfo } from '../../utils/reducers';
+import { IComment } from './Post';
 
 const AddCommentContainer = styled.form``;
 
-const CreateComment = () => {
+interface Props {
+  handlePostComment?: (postId: string, comment: IComment) => void;
+  comments: ICommentInfo[];
+  userId: string;
+  postId: string;
+}
+
+const CreateComment = ({
+  handlePostComment,
+  userId,
+  postId,
+}: Pick<Props, 'handlePostComment' | 'userId' | 'postId'>) => {
+  const [comment, setComment] = useState({
+    userId,
+    text: '',
+  });
   return (
     <div className='border-t border-gray-primary'>
-      <AddCommentContainer className='flex justify-between pl-0 pr-5'>
+      <AddCommentContainer className='flex justify-between pl-0'>
         <input
           aria-label='Comment'
           autoComplete='on'
@@ -16,16 +34,22 @@ const CreateComment = () => {
           type='text'
           name='add-comment'
           placeholder='Comment...'
-          value={''}
-          onChange={() => {}}
+          value={comment.text}
+          onChange={(e) => {
+            setComment({ ...comment, text: e.target.value });
+          }}
         />
         <button
-          className={`text-sm font-bold text-blue-medium ${
-            !true && 'opacity-25'
+          className={`text-sm font-bold text-blue-medium px-8  flex-1  ${
+            !comment.text && 'opacity-25'
           }`}
           type='button'
-          disabled={false}
-          // onClick={handleSubmitComment}
+          disabled={!comment.text}
+          onClick={() => {
+            if (!comment.text) return;
+            handlePostComment!(postId, comment);
+            setComment({ ...comment, text: '' });
+          }}
         >
           Post
         </button>
@@ -38,22 +62,32 @@ const CommentsContainer = styled.div``;
 const SeeMore = styled.button``;
 const Hide = styled.button``;
 
-const Comments = () => {
+const Comments = ({ handlePostComment, comments, userId, postId }: Props) => {
   const [commentLimit, setCommentLimit] = useState<number>(5);
   return (
     <>
-      <CreateComment></CreateComment>
+      <CreateComment
+        handlePostComment={handlePostComment}
+        userId={userId}
+        postId={postId}
+      ></CreateComment>
       <CommentsContainer className='px-6 my-2'>
-        {Array.from({ length: 10 })
-          .slice(0, commentLimit)
-          .map((_, index) => (
-            <Fragment key={index}>
-              <div className=' flex mb-1'>
-                <span className='font-semibold mr-4'>Calvyn Siong</span>
-                <span>{'lor25lor25             className=a'}</span>
-              </div>
-            </Fragment>
-          ))}
+        {comments.slice(0, commentLimit).map((com, index) => {
+          return (
+            com && (
+              <Fragment key={index}>
+                <div className=' flex mb-1'>
+                  <Link to={`/profile/${com?.userId?._id}`}>
+                    <span className='font-semibold mr-4'>
+                      {com?.userId?.username}
+                    </span>
+                  </Link>
+                  <span>{com.text}</span>
+                </div>
+              </Fragment>
+            )
+          );
+        })}
         <div className='flex flex-wrap justify-around px-4 my-4'>
           <SeeMore
             className='text-gray-base mb-1 cursor-pointer'
@@ -76,4 +110,4 @@ const Comments = () => {
   );
 };
 
-export default Comments;
+export default React.memo(Comments);
