@@ -26,7 +26,6 @@ const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
   const { fetchedUser } = useProfileContext();
   const { following, followers } = fetchedUser!;
   const friends = datatype === 'following' ? following : followers;
-  console.log(friends);
   return (
     <section className='mt-14 top-4 outline-[red]'>
       <Modal

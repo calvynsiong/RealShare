@@ -4,6 +4,7 @@ import { useLoginUserQ } from '../../queries/authQ';
 // components
 
 import { capitalize } from '../../utils/functions';
+import { errorToast } from './../../utils/toasts';
 
 const LoginForm = () => {
   interface ILoginInfo {
@@ -45,7 +46,7 @@ const LoginForm = () => {
       const id = userId ?? JSON.parse(localStorage.user)?._id;
       await history.push(`/profile/${id}`);
     } catch (error: any) {
-      console.log(error?.message);
+      errorToast(error?.message);
     }
   };
 

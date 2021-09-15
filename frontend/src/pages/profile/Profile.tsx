@@ -1,4 +1,4 @@
-import { createContext, useMemo, useContext, useState } from 'react';
+import { createContext, useMemo, useContext, useState, useEffect } from 'react';
 import ProfileHeader from '../../components/profile/ProfileHeader';
 import Photos from '../../components/profile/Photos';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
@@ -7,6 +7,8 @@ import { useGetUserByIdQ } from '../../queries/authQ';
 import { useParams } from 'react-router';
 import { DEFAULT_IMG } from '../../utils/constants';
 import MainLayout from '../../components/layouts/MainLayout';
+import { IPost } from '../../utils/reducers';
+import axios from 'axios';
 
 export type IProfileContext = {
   fetchedUser: IUser;
@@ -14,13 +16,14 @@ export type IProfileContext = {
   openFriends: (type: string) => void;
   closeFriends: () => void;
   datatype: string;
+  posts: IPost[] | null;
+  loading: boolean;
 };
 
 export const ProfileContext = createContext<IProfileContext | null>(null);
 
 const Profile = () => {
   // console.log(token);
-  console.log(process.env, 'PROCESS');
   const defaultImg =
     DEFAULT_IMG ?? 'https://avatars.dicebear.com/api/gridy/:seed.svg';
   const { pid } = useParams<{ pid: string }>();
@@ -31,23 +34,37 @@ const Profile = () => {
     setDatatype(() => type);
     setShowFriends(true);
   };
-  const closeFriends = (): void => setShowFriends(false);
+  const [posts, setPosts] = useState<IPost[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const closeFriends = (): void => setShowFriends(true);
 
   const [token, loaded] = useProtectedRoute(setUserData, userData!);
 
   const { data: fetchedUser } = useGetUserByIdQ(pid);
+  useEffect(() => {
+    if (!fetchedUser) return;
+    const fetchPosts = async () => {
+      const { data } = await axios.get(
+        `/api/v1/post/myPosts/${fetchedUser?._id}`
+      );
+      const profilePosts = await data.dataPayload.myPosts;
+      setPosts(() => profilePosts);
+    };
+    fetchPosts();
+    setLoading(false);
+  }, [fetchedUser]);
 
-  const profileContext: IProfileContext = useMemo(
-    () => ({
-      fetchedUser,
-      showFriends,
-      openFriends,
-      closeFriends,
-      datatype,
-    }),
-    [fetchedUser, showFriends, datatype]
-  );
-
+  const profileContext: IProfileContext = {
+    fetchedUser,
+    posts,
+    loading,
+    showFriends,
+    openFriends,
+    closeFriends,
+    datatype,
+  };
+  console.log(posts);
   return !token || !loaded || !fetchedUser ? null : (
     <MainLayout>
       <ProfileContext.Provider value={profileContext}>

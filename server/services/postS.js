@@ -8,7 +8,7 @@ const populatePost = async (post) => {
     .populate('userId', ['_id', 'username', 'avatar'])
     .populate('comments.userId', ['_id', 'username'])
     .populate('likes', ['_id', 'username'])
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: 1 });
   return populatedPost;
 };
 
@@ -33,7 +33,10 @@ exports.getAllPosts_DB = async () => {
   return allPosts;
 };
 exports.getSinglePostById_DB = async (postId) => {
-  const allPosts = await populatePost(PostM.findOne({ _id: postId }));
+  console.log(postId);
+  const allPosts = await populatePost(
+    PostM.findOne({ _id: postId.replace(/^\s+|\s+$/g, '') })
+  );
   return allPosts;
 };
 exports.getMyLikedPosts_DB = async (userId) => {

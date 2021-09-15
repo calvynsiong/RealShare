@@ -22,9 +22,6 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
 
   const isAnotherProfile = userData?._id !== _id;
-  console.log(userData?._id, _id, 'anotherProfile');
-
-  console.log(userData, 'user');
 
   return (
     <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>

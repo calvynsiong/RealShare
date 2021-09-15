@@ -20,7 +20,6 @@ const useProtectedRoute = (
         console.log('Booted!');
         history.push('/login');
       }
-      console.log(userData, 'user data set');
       const timeOfLogin: number = JSON.parse(
         localStorage.getItem('timeOfLogin')!
       ) as number;
@@ -33,11 +32,11 @@ const useProtectedRoute = (
         return;
       }
 
-      console.log('axios verification start');
       if (localStorage.token && localStorage.user) {
         setToken(() => localStorage.token);
         setJWTinAxios(localStorage.token);
         setLoaded(() => true);
+        console.log('axios verified');
         return;
       }
 

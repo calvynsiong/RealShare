@@ -26,7 +26,6 @@ const PostCenter = ({
   handleLikeOrDislike,
 }: Props<IBasicInfo>) => {
   const liked = likes ? likes.find((like) => like._id === mainUserId) : false;
-  console.log(liked, 'LIKED OR NOT');
   return (
     <>
       <img

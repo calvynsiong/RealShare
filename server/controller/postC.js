@@ -161,6 +161,7 @@ exports.getAllPosts = asyncHandler(async (req, res, next) => {
 exports.getSinglePost = asyncHandler(async (req, res, next) => {
   try {
     const { postId } = req.params;
+    console.log(postId, 'post controler');
     const post = await getSinglePostById_DB(postId);
     return responseHandler(
       {
@@ -171,6 +172,7 @@ exports.getSinglePost = asyncHandler(async (req, res, next) => {
       res
     );
   } catch (err) {
+    console.log(err);
     return responseHandler(
       {
         statusCode: 500,

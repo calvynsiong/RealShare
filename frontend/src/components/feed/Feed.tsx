@@ -24,7 +24,6 @@ const Feed = () => {
 
   const handleLikeOrDislike = useCallback(
     async (postId: string, userId: string) => {
-      console.log(userId, 'liked Id');
       const { data } = await axios.put(`/api/v1/post/likeOrUnlike/${postId}`, {
         userId,
       });
@@ -38,7 +37,6 @@ const Feed = () => {
 
   const handlePostComment = useCallback(
     async (postId: string, comment: IComment) => {
-      console.log(comment, 'comment');
       const { data } = await axios.put(
         `/api/v1/post/comment/${postId}`,
         comment
@@ -50,8 +48,6 @@ const Feed = () => {
     },
     [posts]
   );
-
-  console.log(posts, 'feed');
 
   return (
     <div style={{ flex: 5 }}>

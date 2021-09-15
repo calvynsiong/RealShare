@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Skeleton from 'react-loading-skeleton';
+import { useProfileContext } from './../../pages/profile/Profile';
+import { Link } from 'react-router-dom';
 
 const PhotoWrapper = styled.div``;
 // const
@@ -10,16 +12,18 @@ const Photos = ({ defaultImg }: { defaultImg: string }) => {
     .fill(1)
     .map((_, i) => <Skeleton key={i} />);
   const NoPostsFiller = <p className='text-center text-2xl'>No Posts Yet</p>;
+  const { posts, loading } = useProfileContext();
+
   return (
     <div className='border m-8 p-4'>
       <PhotoWrapper className='grid grid-cols-3 gap-8 my-2'>
-        {false
+        {loading || !posts
           ? LoadingPhotos
-          : true
-          ? new Array(10).fill(1).map((_, i) => (
-              <a href='/post/2'>
-                <div key={i} className='relative group cursor-pointer'>
-                  <img src={defaultImg} alt={`Hello World`} />
+          : posts!.length > 0
+          ? posts!.map(({ _id, img, likes, comments }, i) => (
+              <Link to={`/post/${_id}`}>
+                <div key={_id} className='relative group cursor-pointer'>
+                  <img src={img ?? defaultImg} alt={`Hello World`} />
                   <div className='absolute bottom-0 left-0 bg-gray-200 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden'>
                     <p className='flex items-center text-white font-bold'>
                       <svg
@@ -34,7 +38,7 @@ const Photos = ({ defaultImg }: { defaultImg: string }) => {
                           clipRule='evenodd'
                         />
                       </svg>
-                      {50}
+                      {likes!.length}
                     </p>
                     <p className='flex items-center text-white font-bold'>
                       <svg
@@ -49,11 +53,11 @@ const Photos = ({ defaultImg }: { defaultImg: string }) => {
                           clipRule='evenodd'
                         />
                       </svg>
-                      {50}
+                      {comments!.length}
                     </p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))
           : NoPostsFiller}
       </PhotoWrapper>
@@ -61,9 +65,4 @@ const Photos = ({ defaultImg }: { defaultImg: string }) => {
   );
 };
 
-export async function getStaticProps() {
-  return {
-    props: { defaultImg: process.env.REACT_APP_DEFAULT_IMG_SOURCE }, // will be passed to the page component as props
-  };
-}
-export default Photos;
+export default React.memo(Photos);

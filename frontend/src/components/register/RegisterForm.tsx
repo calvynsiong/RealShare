@@ -115,7 +115,6 @@ const RegisterForm = () => {
     passwordConfirmed &&
     password === passwordConfirmed
   );
-  console.log(invalid);
 
   return (
     <article className='flex w-full md:w-3/5 flex-wrap m-4 my-20 max h-5/6'>
