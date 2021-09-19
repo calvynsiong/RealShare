@@ -23,7 +23,6 @@ export type IProfileContext = {
 export const ProfileContext = createContext<IProfileContext | null>(null);
 
 const Profile = () => {
-  // console.log(token);
   const defaultImg =
     DEFAULT_IMG ?? 'https://avatars.dicebear.com/api/gridy/:seed.svg';
   const { pid } = useParams<{ pid: string }>();
@@ -37,7 +36,7 @@ const Profile = () => {
   const [posts, setPosts] = useState<IPost[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const closeFriends = (): void => setShowFriends(true);
+  const closeFriends = (): void => setShowFriends(false);
 
   const [token, loaded] = useProtectedRoute(setUserData, userData!);
 
@@ -64,7 +63,7 @@ const Profile = () => {
     closeFriends,
     datatype,
   };
-  console.log(posts);
+  console.log('POSTS', posts);
   return !token || !loaded || !fetchedUser ? null : (
     <MainLayout>
       <ProfileContext.Provider value={profileContext}>

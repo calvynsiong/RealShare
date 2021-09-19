@@ -63,7 +63,6 @@ export function postReducer(
         feedPosts: payload as IPost[],
       };
     case PostActEnums.FAVOURITE_POST:
-      console.log('test');
       const {
         userId: { _id, username },
       } = payload as IPost;

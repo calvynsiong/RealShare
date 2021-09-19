@@ -16,7 +16,7 @@ const { verifyToken } = require('../middleware/auth');
 router.route('/update/:id').put(verifyToken, updateUser);
 router.route('/delete/:id').delete(verifyToken, deleteUser);
 router.route('/find/:id').get(verifyToken, getUser);
-router.route('/all').get(verifyToken, getAllUsers);
+router.route('/all').get(getAllUsers);
 router.route('/follow/:id').put(verifyToken, followUser);
 router.route('/unfollow/:id').put(verifyToken, unfollowUser);
 

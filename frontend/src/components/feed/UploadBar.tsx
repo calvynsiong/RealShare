@@ -174,7 +174,7 @@ const UploadBar = () => {
   };
 
   return (
-    <UploadContainer className='flex  w-full mx-auto mt-16 md:w-3/4'>
+    <UploadContainer className='flex  w-full mx-auto mt-20 md:w-3/4'>
       <UploadWrapper className='h-full flex-1 w-full mx-12 my-4 p-4 flex flex-col'>
         <UploadPhoto className='w-full flex justify-center items-center gap-4 '>
           <ProfPic

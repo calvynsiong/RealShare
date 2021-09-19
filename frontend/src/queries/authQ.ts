@@ -32,7 +32,6 @@ export const useRegisterUserQ = () => {
 };
 export const useLoginUserQ = () => {
   const client = useQueryClient();
-  console.log('Login');
   return useMutation(
     (loginInfo: ILoginInfo) => {
       return axios

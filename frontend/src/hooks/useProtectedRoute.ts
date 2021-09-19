@@ -14,7 +14,6 @@ const useProtectedRoute = (
   // const [user, setUser] = useState<string | null>(null);
   useEffect(() => {
     if (window !== undefined && localStorage && setUserData) {
-      console.log(setUserData, localStorage, userData);
       setUserData(JSON.parse(localStorage.getItem('user') as string));
       if (!localStorage.token) {
         console.log('Booted!');

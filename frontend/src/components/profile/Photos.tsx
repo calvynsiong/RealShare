@@ -21,7 +21,7 @@ const Photos = ({ defaultImg }: { defaultImg: string }) => {
           ? LoadingPhotos
           : posts!.length > 0
           ? posts!.map(({ _id, img, likes, comments }, i) => (
-              <Link to={`/post/${_id}`}>
+              <Link key={_id} to={`/post/${_id}`}>
                 <div key={_id} className='relative group cursor-pointer'>
                   <img src={img ?? defaultImg} alt={`Hello World`} />
                   <div className='absolute bottom-0 left-0 bg-gray-200 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden'>

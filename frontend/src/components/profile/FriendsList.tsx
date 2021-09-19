@@ -30,7 +30,7 @@ const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
     <section className='mt-14 top-4 outline-[red]'>
       <Modal
         style={customStyles}
-        className='max-w-3/4  fixed bg-white w-3/4 shadow-xl p-4  ease-linear overflow-y-auto outline-none '
+        className='max-w-3/4  fixed bg-white w-3/4 shadow-xl p-4 z-50 ease-linear overflow-y-auto outline-none '
         isOpen={showFriends}
         onRequestClose={closeFriends}
         shouldCloseOnOverlayClick={true}
