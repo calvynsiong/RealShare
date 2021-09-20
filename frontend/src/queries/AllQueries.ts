@@ -1,9 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
 import { IUser } from '../App';
 import { IPost } from '../utils/reducers';
+import { UPLOAD_IMG_URL } from '../utils/constants';
 
 // * Auth Related Queries
 interface IRegisterInfo {
@@ -97,10 +98,16 @@ interface IFollowIds {
   subjectId: string;
   userId: string;
 }
-type PostData = Pick<IPost, 'img' | 'desc' | 'tags' | 'location' | 'userId'>;
+type PostData = Pick<IPost, 'desc' | 'tags' | 'location'> & {
+  userId: string;
+  img: string;
+};
 
-const createPost = async (data: PostData) => {
+const createPost = async (
+  data: PostData
+): Promise<void | { res: AxiosResponse<any>; userId: string }> => {
   const { userId } = data;
+
   const res = await axios.post(`/api/v1/post/create`, data, {
     headers: {
       withCredentials: true,
@@ -108,12 +115,13 @@ const createPost = async (data: PostData) => {
   });
   return { res, userId };
 };
+
 export const useCreatePostQ = () => {
   const QueryClient = useQueryClient();
   return useMutation((input: PostData) => createPost(input), {
     onSuccess: async (data) => {
       successToast('Post Created');
-      await QueryClient.invalidateQueries(['user', data.userId]);
+      await QueryClient.invalidateQueries(['user', data!.userId]);
     },
     onError: (err: Error) => {
       console.log(err);

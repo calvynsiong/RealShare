@@ -24,7 +24,7 @@ interface Props {
 }
 
 const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
-  const { _id, img, location, tags, userId, likes, comments } = post!;
+  const { _id, img, location, tags, userId, likes, comments, desc } = post!;
 
   const { avatar, _id: user, username } = userId;
   const { userData } = useUserContext();
@@ -49,8 +49,10 @@ const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
           username={username}
         ></PostCenter>
         <Comments
+          caption={desc}
           handlePostComment={handlePostComment}
           comments={comments!}
+          username={username}
           userId={userData!._id!}
           postId={_id}
         ></Comments>

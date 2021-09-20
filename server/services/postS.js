@@ -8,7 +8,7 @@ const populatePost = async (post) => {
     .populate('userId', ['_id', 'username', 'avatar'])
     .populate('comments.userId', ['_id', 'username'])
     .populate('likes', ['_id', 'username'])
-    .sort({ createdAt: 1 });
+    .sort({ createdAt: -1 });
   return populatedPost;
 };
 

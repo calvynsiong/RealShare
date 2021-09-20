@@ -4,6 +4,15 @@ import styled from 'styled-components';
 import { PermMedia, Label, Room } from '@material-ui/icons';
 import Select from 'react-select';
 import TagSelectBar from './TagSelectBar';
+import { useUserContext } from '../../App';
+import { useCreatePostQ } from '../../queries/AllQueries';
+import { UPLOAD_IMG_URL } from '../../utils/constants';
+import axios from 'axios';
+import { errorToast } from '../../utils/toasts';
+
+interface IButtonProps {
+  invalid: boolean;
+}
 
 const UploadContainer = styled.div``;
 const UploadWrapper = styled.div`
@@ -41,46 +50,51 @@ const SingleOption = styled.div`
   display: flex;
   gap: 1rem;
 `;
-const UploadButton = styled.button`
+const UploadButton = styled.button<IButtonProps>`
   border: none;
   padding: 7px;
   width: 75%;
   background-color: blue;
+  opacity: ${(props) => (props.invalid ? '0.5' : '1')};
   font-weight: 500;
-
   margin-top: 2rem;
   cursor: pointer;
   color: white;
 `;
 
+interface IUploadInfo {
+  desc: string;
+  img: File | null;
+  userId: string;
+  tags: any[];
+  location: any[];
+}
+
 const UploadBar = () => {
   // Both tags + location tag
-  const [optionalTags, setOptionalTags] = useState({ tags: [], location: [] });
-  const { tags, location } = optionalTags;
+  const { userData } = useUserContext();
+  const { mutate: uploadPost } = useCreatePostQ();
+  const initialState = {
+    desc: '',
+    img: null,
+    userId: userData!._id,
+    tags: [],
+    location: [],
+  };
+  const [uploadInfo, setUploadInfo] = useState<IUploadInfo>(initialState);
+  const { tags, location, desc, img } = uploadInfo;
+  // console.log(uploadInfo);
   const [showTags, setShowTags] = useState<boolean>(false);
   const [showLocation, setShowLocation] = useState<boolean>(false);
   const Options = [
     {
-      icon: <PermMedia htmlColor='blue' />,
-      label: 'Upload from device',
-    },
-    {
-      icon: (
-        <Label
-          className='cursor-pointer'
-          onClick={() => setShowTags((prev) => !prev)}
-        />
-      ),
+      onClick: () => setShowTags((prev) => !prev),
+      icon: <Label className='cursor-pointer' />,
       label: 'Tags',
     },
     {
-      icon: (
-        <Room
-          className='cursor-pointer'
-          onClick={() => setShowLocation((prev) => !prev)}
-          htmlColor='green'
-        />
-      ),
+      onClick: () => setShowLocation((prev) => !prev),
+      icon: <Room className='cursor-pointer' htmlColor='green' />,
       label: 'Location',
     },
   ];
@@ -88,23 +102,26 @@ const UploadBar = () => {
   // helper function to change field
   const changeField = (
     e: React.SyntheticEvent,
-    custom: string,
-    customValues: any[]
+    custom?: string,
+    customValues?: any[]
   ) => {
     if (!e) return;
+    console.log(e);
     const target = e.target as typeof e.target & {
       name: string;
       value: any;
     };
     if (custom) {
-      setOptionalTags({ ...optionalTags, [custom]: customValues });
+      setUploadInfo({ ...uploadInfo, [custom]: customValues });
     } else {
-      setOptionalTags({
-        ...optionalTags,
+      setUploadInfo({
+        ...uploadInfo,
         [target.name]: target.value!,
       });
     }
   };
+
+  const isUploadDisabled = !desc || !img;
 
   const [tagInput, setTagInput] = useState('');
   const [locationInput, setLocationInput] = useState('');
@@ -122,7 +139,7 @@ const UploadBar = () => {
         break;
     }
   };
-
+  // console.log('render', tags);
   // Converts "future" tag to proper tag + adds it to tag list
   const addTags = (e: React.SyntheticEvent, type: string) => {
     if (!e) return;
@@ -155,6 +172,42 @@ const UploadBar = () => {
     changeField(selectedOption, type, [...changedData]);
   };
 
+  const handleUploadPost = async () => {
+    console.log('submit', uploadInfo);
+    const { userId, desc, img, location, tags } = uploadInfo;
+    const fileImage = new FormData();
+    fileImage.append('upload_preset', 'realshare');
+    fileImage.append('file', img as File);
+    fileImage.append('cloud_name', 'spedwagon');
+    let processedImage: string = '';
+    console.log('Image', UPLOAD_IMG_URL, fileImage.entries());
+    await fetch(UPLOAD_IMG_URL, {
+      method: 'post',
+      body: fileImage,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        processedImage = data.secure_url;
+      })
+      .catch((err) => {
+        console.log(err);
+        errorToast('Image was not processed!');
+      });
+
+    const processedData = {
+      userId,
+      desc,
+      img: processedImage,
+      tags,
+      location,
+    };
+    if (img !== null) {
+      const checkedImg: File = uploadInfo.img as File;
+      await uploadPost(processedData);
+    }
+  };
+
   // ! Props
   const tagProps = {
     tags,
@@ -173,9 +226,10 @@ const UploadBar = () => {
     tagInput: locationInput,
   };
 
+  // console.log(img, 'IMAGE');
   return (
     <UploadContainer className='flex  w-full mx-auto mt-20 md:w-3/4'>
-      <UploadWrapper className='h-full flex-1 w-full mx-12 my-4 p-4 flex flex-col'>
+      <UploadWrapper className='h-full flex-1 mx-8 my-4 p-4 flex flex-col'>
         <UploadPhoto className='w-full flex justify-center items-center gap-4 '>
           <ProfPic
             src='https://avatars.dicebear.com/api/gridy/:seed.svg'
@@ -185,15 +239,44 @@ const UploadBar = () => {
           <InputText
             placeholder='Type a caption or something here!'
             aria-label='Post Description'
-            name='description'
+            name='desc'
             rows={5}
+            value={desc}
+            onChange={(e) => changeField(e)}
             className='w-3/4 m-4 mt-0 focus:outline-none'
           ></InputText>
         </UploadPhoto>
         <Divider></Divider>
         <div>
-          <UploadOptions className='flex justify-center items-center flex-wrap'>
-            {Options.map((option, index) => (
+          <label htmlFor='file'>
+            <UploadOptions className='flex justify-center items-start flex-wrap'>
+              <SingleOption className='flex items-center cursor-pointer mr-4'>
+                <input
+                  type='file'
+                  id='file'
+                  accept='image/png, image/jpeg'
+                  hidden
+                  onChange={(e: React.SyntheticEvent) => {
+                    const target = e.target as typeof e.target & {
+                      files: File[];
+                    };
+                    setUploadInfo({
+                      ...uploadInfo,
+                      img: target.files[0],
+                    });
+                  }}
+                ></input>
+                <PermMedia htmlColor='blue' />
+
+                <span>Upload a picture</span>
+              </SingleOption>
+            </UploadOptions>
+          </label>
+          {Options.map((option, index) => (
+            <UploadOptions
+              className='flex justify-center items-start flex-wrap'
+              onClick={option.onClick}
+            >
               <SingleOption
                 className='flex items-center cursor-pointer mr-4'
                 key={index}
@@ -201,8 +284,8 @@ const UploadBar = () => {
                 {option.icon}
                 <span>{option.label}</span>
               </SingleOption>
-            ))}
-          </UploadOptions>
+            </UploadOptions>
+          ))}
         </div>
         <>
           {showTags && (
@@ -218,7 +301,14 @@ const UploadBar = () => {
             </>
           )}
         </>
-        <UploadButton className='mx-auto'>Upload</UploadButton>
+        <UploadButton
+          disabled={isUploadDisabled}
+          invalid={isUploadDisabled}
+          className='mx-auto'
+          onClick={handleUploadPost}
+        >
+          Upload
+        </UploadButton>
       </UploadWrapper>
     </UploadContainer>
   );

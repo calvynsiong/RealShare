@@ -44,12 +44,14 @@ const SinglePost = () => {
       <section className='container mt-24'>
         {post && token && loaded ? (
           <Post
-            post={post}
+            post={post!}
             handleLikeOrDislike={handleLikeOrDislike}
             handlePostComment={handlePostComment}
           ></Post>
         ) : (
-          <Skeleton width={500} height={500} className='mx-auto' />
+          <div className='w-full h-full grid place-items-center'>
+            <Skeleton width={500} height={500} />
+          </div>
         )}
       </section>
     </MainLayout>

@@ -13,6 +13,8 @@ interface Props {
   comments: ICommentInfo[];
   userId: string;
   postId: string;
+  caption: string;
+  username: string;
 }
 
 const CreateComment = ({
@@ -62,7 +64,14 @@ const CommentsContainer = styled.div``;
 const SeeMore = styled.button``;
 const Hide = styled.button``;
 
-const Comments = ({ handlePostComment, comments, userId, postId }: Props) => {
+const Comments = ({
+  handlePostComment,
+  comments,
+  userId,
+  postId,
+  caption,
+  username,
+}: Props) => {
   const [commentLimit, setCommentLimit] = useState<number>(5);
   return (
     <>
@@ -72,6 +81,12 @@ const Comments = ({ handlePostComment, comments, userId, postId }: Props) => {
         postId={postId}
       ></CreateComment>
       <CommentsContainer className='px-6 my-2'>
+        <div className=' flex mb-1'>
+          <Link to={`/profile/${userId}`}>
+            <span className='font-bold text-lg mr-4'>{username}</span>
+          </Link>
+          <span>{caption}</span>
+        </div>
         {comments.slice(0, commentLimit).map((com, index) => {
           return (
             com && (
