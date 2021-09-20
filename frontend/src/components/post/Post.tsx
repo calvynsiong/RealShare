@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 // components
 import Comments from './Comments';
-import PostBottom from './PostBottom';
 import PostCenter from './PostCenter';
 import PostTop from './PostTop';
 import { IPost } from './../../utils/reducers';

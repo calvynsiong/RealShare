@@ -60,13 +60,13 @@ const RegisterForm = () => {
     setRegisterInfo(newData);
   };
 
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [, setError] = useState<string | null>(null);
+  const [, setLoading] = useState<boolean>(false);
   const history = useHistory();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     const emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     event.preventDefault();
@@ -94,7 +94,7 @@ const RegisterForm = () => {
     ];
     for (const field of errorCheckList) {
       if (!field.regex.test(field.type)) {
-        setError((prev) => field.message);
+        setError(() => field.message);
         setLoading(false);
         errorToast(field.message);
         return;

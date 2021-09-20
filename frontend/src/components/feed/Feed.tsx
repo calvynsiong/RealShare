@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 // components
 import UploadBar from './UploadBar';
 import Post, { IComment } from '../post/Post';
 import { useUserContext } from '../../App';
-import { IPost, PostActEnums } from '../../utils/reducers';
+import { IPost } from '../../utils/reducers';
 import axios from 'axios';
 import { useGetFeedPostsQ } from '../../queries/AllQueries';
 

@@ -2,9 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
-import { IUser } from '../App';
 import { IPost } from '../utils/reducers';
-import { UPLOAD_IMG_URL } from '../utils/constants';
 
 // * Auth Related Queries
 interface IRegisterInfo {

@@ -5,14 +5,7 @@ import useProtectedRoute from '../../hooks/useProtectedRoute';
 import { useUserContext } from '../../App';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  ReactNode,
-} from 'react';
+import { useCallback, useEffect, useRef, useState, ReactNode } from 'react';
 import axios from 'axios';
 
 const Logo = styled.div`

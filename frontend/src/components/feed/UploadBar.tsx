@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 // components
 import { PermMedia, Label, Room } from '@material-ui/icons';
-import Select from 'react-select';
 import TagSelectBar from './TagSelectBar';
 import { useUserContext } from '../../App';
 import { useCreatePostQ } from '../../queries/AllQueries';
 import { UPLOAD_IMG_URL } from '../../utils/constants';
-import axios from 'axios';
 import { errorToast } from '../../utils/toasts';
 
 interface IButtonProps {
@@ -203,7 +201,6 @@ const UploadBar = () => {
       location,
     };
     if (img !== null) {
-      const checkedImg: File = uploadInfo.img as File;
       await uploadPost(processedData);
     }
   };

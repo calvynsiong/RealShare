@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // utils
-import { shorten } from '../../utils/functions';
 import { ICommentInfo } from '../../utils/reducers';
 import { IComment } from './Post';
 

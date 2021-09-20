@@ -5,7 +5,6 @@ import useProtectedRoute from '../../hooks/useProtectedRoute';
 import { IFollows, IUser, useUserContext } from '../../App';
 import {
   useFollowUserByIdQ,
-  useGetMyUserDataQ,
   useGetUserByIdQ,
   useUnfollowUserByIdQ,
 } from '../../queries/AllQueries';

@@ -30,7 +30,7 @@ const SinglePost = () => {
       const updatedPost = data.dataPayload.updatedPost;
       setPost(updatedPost);
     },
-    [pid]
+    []
   );
 
   const handlePostComment = async (postId: string, comment: IComment) => {
