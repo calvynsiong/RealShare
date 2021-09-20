@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
+import { IUser } from '../App';
 
 interface IRegisterInfo {
   email: string;
@@ -88,6 +89,51 @@ export const useGetUserByIdQ = (userId: string) => {
     }
   );
 };
+interface IFollowIds {
+  subjectId: string;
+  userId: string;
+}
+
+const followUser = async (data: IFollowIds, action: string) => {
+  const { subjectId, userId } = data;
+  const res = await axios.put(
+    `/api/v1/user/${action}/${subjectId}`,
+    { userId },
+    {
+      headers: {
+        withCredentials: true,
+      },
+    }
+  );
+  return { res, subjectId };
+};
+export const useFollowUserByIdQ = () => {
+  const QueryClient = useQueryClient();
+  return useMutation((input: IFollowIds) => followUser(input, 'follow'), {
+    onSuccess: async (data) => {
+      successToast('Followed user');
+      await QueryClient.invalidateQueries(['user', data.subjectId]);
+    },
+    onError: (err: Error) => {
+      console.log(err);
+      errorToast('Failed to follow user');
+    },
+  });
+};
+export const useUnfollowUserByIdQ = () => {
+  const QueryClient = useQueryClient();
+  return useMutation((input: IFollowIds) => followUser(input, 'unfollow'), {
+    onSuccess: async (data) => {
+      successToast('Followed user');
+      await QueryClient.invalidateQueries(['user', data.subjectId]);
+    },
+    onError: (err: Error) => {
+      console.log(err);
+      errorToast('Failed to unfollow user');
+    },
+  });
+};
+
 export const useGetAllUsersQ = () => {
   return useQuery(
     'allUsers',

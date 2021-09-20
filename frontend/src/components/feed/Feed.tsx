@@ -35,20 +35,13 @@ const Feed = () => {
     [posts]
   );
 
-  const handlePostComment = useCallback(
-    async (postId: string, comment: IComment) => {
-      const { data } = await axios.put(
-        `/api/v1/post/comment/${postId}`,
-        comment
-      );
-      const updatedPosts = posts.map((post: IPost) => {
-        return post._id === postId ? data.dataPayload.updatedPost : post;
-      });
-      setPosts(updatedPosts);
-    },
-    [posts]
-  );
-
+  const handlePostComment = async (postId: string, comment: IComment) => {
+    const { data } = await axios.put(`/api/v1/post/comment/${postId}`, comment);
+    const updatedPosts = posts.map((post: IPost) => {
+      return post._id === postId ? data.dataPayload.updatedPost : post;
+    });
+    setPosts(updatedPosts);
+  };
   return (
     <div style={{ flex: 5 }}>
       <FeedContainer>

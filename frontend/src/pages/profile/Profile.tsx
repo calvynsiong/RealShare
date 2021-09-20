@@ -2,8 +2,12 @@ import { createContext, useMemo, useContext, useState, useEffect } from 'react';
 import ProfileHeader from '../../components/profile/ProfileHeader';
 import Photos from '../../components/profile/Photos';
 import useProtectedRoute from '../../hooks/useProtectedRoute';
-import { IUser, useUserContext } from '../../App';
-import { useGetUserByIdQ } from '../../queries/authQ';
+import { IFollows, IUser, useUserContext } from '../../App';
+import {
+  useFollowUserByIdQ,
+  useGetUserByIdQ,
+  useUnfollowUserByIdQ,
+} from '../../queries/AllQueries';
 import { useParams } from 'react-router';
 import { DEFAULT_IMG } from '../../utils/constants';
 import MainLayout from '../../components/layouts/MainLayout';
@@ -18,6 +22,8 @@ export type IProfileContext = {
   datatype: string;
   posts: IPost[] | null;
   loading: boolean;
+  handleFollowOrUnfollowUser: (subjectId: string, userId: string) => void;
+  isFollowing: boolean;
 };
 
 export const ProfileContext = createContext<IProfileContext | null>(null);
@@ -27,20 +33,22 @@ const Profile = () => {
     DEFAULT_IMG ?? 'https://avatars.dicebear.com/api/gridy/:seed.svg';
   const { pid } = useParams<{ pid: string }>();
   const { setUserData, userData } = useUserContext();
+  const [token, loaded] = useProtectedRoute(setUserData, userData!);
   const [showFriends, setShowFriends] = useState<boolean>(false);
   const [datatype, setDatatype] = useState<string>('followers');
   const openFriends = (type: string): void => {
     setDatatype(() => type);
     setShowFriends(true);
   };
+  const { data: fetchedUser } = useGetUserByIdQ(pid);
+  const { mutate: handleFollowUser } = useFollowUserByIdQ();
+  const { mutate: handleUnfollowUser } = useUnfollowUserByIdQ();
+
   const [posts, setPosts] = useState<IPost[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const closeFriends = (): void => setShowFriends(false);
 
-  const [token, loaded] = useProtectedRoute(setUserData, userData!);
-
-  const { data: fetchedUser } = useGetUserByIdQ(pid);
   useEffect(() => {
     if (!fetchedUser) return;
     const fetchPosts = async () => {
@@ -53,6 +61,24 @@ const Profile = () => {
     fetchPosts();
     setLoading(false);
   }, [fetchedUser]);
+  const isFollowing = useMemo(
+    () =>
+      fetchedUser?.followers.some(
+        (follower: IFollows) => follower.id === userData?._id
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [fetchedUser]
+  );
+  const handleFollowOrUnfollowUser = (
+    subjectId: string,
+    userId: string
+  ): void => {
+    if (isFollowing) {
+      handleUnfollowUser({ subjectId, userId });
+    } else {
+      handleFollowUser({ subjectId, userId });
+    }
+  };
 
   const profileContext: IProfileContext = {
     fetchedUser,
@@ -61,9 +87,11 @@ const Profile = () => {
     showFriends,
     openFriends,
     closeFriends,
+    handleFollowOrUnfollowUser,
     datatype,
+    isFollowing,
   };
-  console.log('POSTS', posts);
+  // console.log('POSTS', posts);
   return !token || !loaded || !fetchedUser ? null : (
     <MainLayout>
       <ProfileContext.Provider value={profileContext}>

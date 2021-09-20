@@ -180,17 +180,18 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
   );
 };
 
-// !Route : Get /api/v1/follow/:id
+// !Route : PUT /api/v1/follow/:id
 // *Desc: Follow others
 exports.followUser = asyncHandler(async (req, res) => {
   try {
+    console.log('FOLLOW commencing');
     await handleUserFollowAndUnfollow(req, res, 'follow');
   } catch (err) {
     console.log(err);
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
-// !Route : Get /api/v1/unfollow/:id
+// !Route : PUT /api/v1/unfollow/:id
 // *Desc: Unfollow others
 exports.unfollowUser = asyncHandler(async (req, res) => {
   try {

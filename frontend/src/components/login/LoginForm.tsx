@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Fragment, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useLoginUserQ } from '../../queries/authQ';
+import { useLoginUserQ } from '../../queries/AllQueries';
 // components
 
 import { capitalize } from '../../utils/functions';

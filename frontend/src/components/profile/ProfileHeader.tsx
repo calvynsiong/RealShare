@@ -11,8 +11,16 @@ const Statistic = styled.div``;
 
 const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   const { userData } = useUserContext();
-  const { fetchedUser, showFriends, closeFriends, openFriends, datatype } =
-    useProfileContext()!;
+  const {
+    fetchedUser,
+    showFriends,
+    closeFriends,
+    openFriends,
+    datatype,
+    posts,
+    handleFollowOrUnfollowUser,
+    isFollowing,
+  } = useProfileContext()!;
   const listProps = {
     closeFriends: closeFriends!,
     showFriends: showFriends!,
@@ -53,7 +61,7 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
           ) : (
             <>
               <p className='mr-10 p-2 '>
-                <span className='font-bold'>{23}</span> photos
+                <span className='font-bold'>{posts?.length ?? 0}</span> photos
               </p>
 
               <p
@@ -80,9 +88,9 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
             <button
               className='bg-blue-600 text-white font-bold text-sm rounded w-20 h-8'
               type='button'
-              // onClick={lighthandleToggleFollow}
+              onClick={() => handleFollowOrUnfollowUser(_id, userData!._id)}
             >
-              {true ? 'Unfollow' : 'Follow'}
+              {isFollowing ? 'Unfollow' : 'Follow'}
             </button>
           ) : null}
         </div>

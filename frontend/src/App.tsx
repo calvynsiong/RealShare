@@ -29,7 +29,7 @@ axios.defaults.baseURL = BASE_URL;
 const queryClient = new QueryClient();
 
 // * Interfaces
-interface IFollows {
+export interface IFollows {
   id: string;
   username: string;
   avatar: string;

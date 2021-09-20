@@ -2,7 +2,7 @@ import React, { ChangeEvent, Fragment, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useRegisterUserQ } from '../../queries/authQ';
+import { useRegisterUserQ } from '../../queries/AllQueries';
 // components
 
 import { capitalize } from '../../utils/functions';

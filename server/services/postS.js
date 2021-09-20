@@ -110,18 +110,17 @@ exports.commentOnPost_DB = async (comment, postId) => {
   try {
     const updatedPost = await populatePost(
       PostM.findOneAndUpdate(
-        { id: postId },
+        { _id: postId },
         { $push: { comments: comment } },
-        { new: true }
+        { runValidators: true, new: true }
       )
     );
+    console.log(updatedPost);
     return updatedPost;
   } catch (error) {
     console.log(error);
     throw new ErrorResponse(error, 404);
   }
-
-  return updatedPost;
 };
 exports.likeOrUnlikePost_DB = async (userId, postId) => {
   console.log(userId, postId, mongoose.Types.ObjectId(userId));
