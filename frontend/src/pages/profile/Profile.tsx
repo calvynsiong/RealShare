@@ -5,6 +5,7 @@ import useProtectedRoute from '../../hooks/useProtectedRoute';
 import { IFollows, IUser, useUserContext } from '../../App';
 import {
   useFollowUserByIdQ,
+  useGetMyUserDataQ,
   useGetUserByIdQ,
   useUnfollowUserByIdQ,
 } from '../../queries/AllQueries';
@@ -16,6 +17,7 @@ import axios from 'axios';
 
 export type IProfileContext = {
   fetchedUser: IUser;
+  // myUser: IUser;
   showFriends: boolean;
   openFriends: (type: string) => void;
   closeFriends: () => void;
@@ -47,6 +49,9 @@ const Profile = () => {
   const [posts, setPosts] = useState<IPost[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // const { data: myUser, isLoading: myUserLoading } = useGetMyUserDataQ(
+  //   userData!._id
+  // );
   const closeFriends = (): void => setShowFriends(false);
 
   useEffect(() => {
@@ -90,6 +95,7 @@ const Profile = () => {
     handleFollowOrUnfollowUser,
     datatype,
     isFollowing,
+    // myUser,
   };
   // console.log('POSTS', posts);
   return !token || !loaded || !fetchedUser ? null : (

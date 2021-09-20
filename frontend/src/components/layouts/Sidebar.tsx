@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import React, { ReactNode } from 'react';
 // components
-import { useUserContext } from './../../App';
+import { useUserContext, IFollows } from './../../App';
 import { Bookmark } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { useGetMyUserDataQ } from '../../queries/AllQueries';
 
 const SidebarSection = styled.section`
   flex: 2;
@@ -39,7 +40,9 @@ const ListItems = [
 
 const Sidebar = () => {
   const { userData } = useUserContext();
-  const followers = userData!.followers!;
+  const { data: myUser, isLoading } = useGetMyUserDataQ(userData!._id);
+  const followers: IFollows[] = myUser?.followers ?? [];
+  const following: IFollows[] = myUser?.following ?? [];
 
   return (
     <SidebarSection className='hidden md:flex sticky'>
@@ -55,7 +58,7 @@ const Sidebar = () => {
         <Divider></Divider>
         <FriendsList className=' mt-4 flex flex-col overflow-y-scroll'>
           <span className='text-xl font-semibold  mb-8 ml-4 '>
-            Friends List ({`${followers.length}`})
+            People I follow ({`${followers.length}`})
           </span>
           {followers.length > 0 ? (
             followers!.map((follower) => (
@@ -70,6 +73,37 @@ const Sidebar = () => {
                     className='object-cover w-8 h-8 rounded-full mr-4'
                   ></img>
                   <span>{follower.username}</span>
+                </Friend>
+              </Link>
+            ))!
+          ) : (
+            <Friend className='flex bg-white gap-3 m-4 mt-0 rounded-md p-3'>
+              <img
+                src='https://avatars.dicebear.com/api/gridy/:seed.svg?mood[]=sad'
+                alt='No friends symbol'
+                className='object-cover w-8 h-8 rounded-full mr-4'
+              ></img>
+              <span>Not following anyone</span>
+            </Friend>
+          )}
+        </FriendsList>
+        <FriendsList className=' mt-4 flex flex-col overflow-y-scroll'>
+          <span className='text-xl font-semibold  mb-8 ml-4 '>
+            People I'm Following ({`${following.length}`})
+          </span>
+          {!isLoading && following.length > 0 ? (
+            following!.map((following) => (
+              <Link to={`/profile/${following.id}`}>
+                <Friend
+                  key={following.id}
+                  className='flex bg-white gap-3 m-4 mt-0 rounded-md p-3 cursor-pointer'
+                >
+                  <img
+                    src={`${following.avatar}??https://avatars.dicebear.com/api/gridy/:seed.svg`}
+                    alt={following.username}
+                    className='object-cover w-8 h-8 rounded-full mr-4'
+                  ></img>
+                  <span>{following.username}</span>
                 </Friend>
               </Link>
             ))!

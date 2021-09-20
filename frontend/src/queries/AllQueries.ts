@@ -3,7 +3,9 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { minutesToMs } from '../utils/functions';
 import { errorToast, successToast } from '../utils/toasts';
 import { IUser } from '../App';
+import { IPost } from '../utils/reducers';
 
+// * Auth Related Queries
 interface IRegisterInfo {
   email: string;
   password: string;
@@ -68,9 +70,63 @@ export const useLoginUserQ = () => {
   );
 };
 
-export const useGetUserByIdQ = (userId: string) => {
+// * Post Related Queries
+export const useGetFeedPostsQ = (userId: string) => {
   return useQuery(
-    ['user', userId],
+    ['feedPosts', userId],
+    () => {
+      return axios
+        .get(`/api/v1/post/feed/${userId}`, {
+          headers: {
+            withCredentials: true,
+          },
+        })
+        .then((res) => res.data.dataPayload.feedPosts);
+    },
+    {
+      cacheTime: minutesToMs(100),
+      staleTime: minutesToMs(100),
+      retry: false,
+
+      onError: (err: string) => errorToast(err),
+    }
+  );
+};
+
+interface IFollowIds {
+  subjectId: string;
+  userId: string;
+}
+type PostData = Pick<IPost, 'img' | 'desc' | 'tags' | 'location' | 'userId'>;
+
+const createPost = async (data: PostData) => {
+  const { userId } = data;
+  const res = await axios.post(`/api/v1/post/create`, data, {
+    headers: {
+      withCredentials: true,
+    },
+  });
+  return { res, userId };
+};
+export const useCreatePostQ = () => {
+  const QueryClient = useQueryClient();
+  return useMutation((input: PostData) => createPost(input), {
+    onSuccess: async (data) => {
+      successToast('Post Created');
+      await QueryClient.invalidateQueries(['user', data.userId]);
+    },
+    onError: (err: Error) => {
+      console.log(err);
+      errorToast('Failed to upload post');
+    },
+  });
+};
+
+// * User Related Queries
+
+export const useGetMyUserDataQ = (userId: string) => {
+  return useQuery(
+    ['myUser', userId],
     () => {
       return axios
         .get(`/api/v1/user/find/${userId}`, {
@@ -89,10 +145,6 @@ export const useGetUserByIdQ = (userId: string) => {
     }
   );
 };
-interface IFollowIds {
-  subjectId: string;
-  userId: string;
-}
 
 const followUser = async (data: IFollowIds, action: string) => {
   const { subjectId, userId } = data;
@@ -145,6 +197,28 @@ export const useGetAllUsersQ = () => {
           },
         })
         .then((res) => res.data.dataPayload.users);
+    },
+    {
+      cacheTime: minutesToMs(200),
+      staleTime: minutesToMs(200),
+      retry: false,
+
+      onError: (err: string) => errorToast(err),
+    }
+  );
+};
+
+export const useGetUserByIdQ = (userId: string) => {
+  return useQuery(
+    ['user', userId],
+    () => {
+      return axios
+        .get(`/api/v1/user/find/${userId}`, {
+          headers: {
+            withCredentials: true,
+          },
+        })
+        .then((res) => res.data.dataPayload.user);
     },
     {
       cacheTime: minutesToMs(200),

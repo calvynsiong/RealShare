@@ -6,6 +6,7 @@ import Post, { IComment } from '../post/Post';
 import { useUserContext } from '../../App';
 import { IPost, PostActEnums } from '../../utils/reducers';
 import axios from 'axios';
+import { useGetFeedPostsQ } from '../../queries/AllQueries';
 
 const FeedContainer = styled.div``;
 
@@ -13,14 +14,13 @@ const Feed = () => {
   const [posts, setPosts] = useState<IPost[]>([] as IPost[]);
 
   const { userData } = useUserContext();
+  const { data: feedPosts, isLoading } = useGetFeedPostsQ(userData!._id);
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      const { data } = await axios.get(`/api/v1/post/feed/${userData?._id}`);
-      const feedPosts = data.dataPayload.feedPosts;
+    if (!isLoading) {
       setPosts(feedPosts);
-    };
-    fetchPosts();
-  }, [userData]);
+    }
+  }, [feedPosts, isLoading]);
 
   const handleLikeOrDislike = useCallback(
     async (postId: string, userId: string) => {

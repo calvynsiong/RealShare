@@ -18,7 +18,9 @@ const ErrorResponse = require('../utils/errorResponse');
 // !Route : POST /api/v1/post/create
 exports.createPost = asyncHandler(async (req, res, next) => {
   try {
-    const postData = removeNull(sanitizer(['img', 'desc', 'userId'], req.body));
+    const postData = removeNull(
+      sanitizer(['img', 'desc', 'userId', 'tags', 'location'], req.body)
+    );
     const newPost = await createPost_DB(postData);
     return responseHandler(
       {
