@@ -24,13 +24,13 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
   const user = await createUser_DB(userData);
   responseHandler(
-    { statusCode: 200, payload: { user }, message: 'User created' },
+    { statusCode: 200, payload: { user }, msg: 'User created' },
     res
   );
 });
 // !Route : POST /api/v1/auth/login
 // *Desc: login existing user
-exports.loginUser = asyncHandler(async (req, res, next) => {
+exports.loginUser = asyncHandler(async (req, res) => {
   let userData = sanitizer(['email', 'password'], req.body);
   try {
     const [user, token] = await loginUser_DB(userData);
@@ -41,13 +41,13 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     });
 
     return responseHandler(
-      { statusCode: 200, payload: { user, token }, message: 'User logged in' },
+      { statusCode: 200, payload: { user, token }, msg: 'User logged in' },
       res
     );
   } catch (err) {
     console.log(err);
     return responseHandler(
-      { statusCode: 404, payload: { err }, message: 'Login Failed' },
+      { statusCode: 404, payload: { err }, msg: 'Login Failed' },
       res
     );
   }

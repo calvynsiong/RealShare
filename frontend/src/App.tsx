@@ -67,7 +67,6 @@ function App() {
   const [allUsers, setAllUsers] = useState<IUser[] | null>(null);
   // const [postState, postDispatch] = useReducer(postReducer, initialPostsState);
 
-  axios.defaults.baseURL = BASE_URL;
   const user = localStorage.getItem('user');
   const globalContext = useMemo(
     () => ({

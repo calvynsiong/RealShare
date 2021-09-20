@@ -19,7 +19,7 @@ export const useRegisterUserQ = () => {
   return useMutation(
     (registerInfo: IRegisterInfo) => {
       return axios
-        .post('/api/v1/auth/register', registerInfo)
+        .post(`api/v1/auth/register`, registerInfo)
         .then((res) => res.data.dataPayload.user);
     },
     {
@@ -37,7 +37,7 @@ export const useLoginUserQ = () => {
   return useMutation(
     (loginInfo: ILoginInfo) => {
       return axios
-        .post('/api/v1/auth/login', loginInfo.info, {
+        .post(`api/v1/auth/login`, loginInfo.info, {
           headers: {
             withCredentials: true,
           },
@@ -63,7 +63,7 @@ export const useLoginUserQ = () => {
         successToast('Successfully logged in');
       },
       onError: (err: string) => {
-        errorToast('Login failed!' ?? err);
+        errorToast('Login failed!');
       },
     }
   );
@@ -75,7 +75,7 @@ export const useGetFeedPostsQ = (userId: string) => {
     ['feedPosts', userId],
     () => {
       return axios
-        .get(`/api/v1/post/feed/${userId}`, {
+        .get(`api/v1/post/feed/${userId}`, {
           headers: {
             withCredentials: true,
           },
@@ -87,7 +87,7 @@ export const useGetFeedPostsQ = (userId: string) => {
       staleTime: minutesToMs(100),
       retry: false,
 
-      onError: (err: string) => errorToast(err),
+      onError: () => errorToast('Could not fetch feed'),
     }
   );
 };
@@ -106,7 +106,7 @@ const createPost = async (
 ): Promise<void | { res: AxiosResponse<any>; userId: string }> => {
   const { userId } = data;
 
-  const res = await axios.post(`/api/v1/post/create`, data, {
+  const res = await axios.post(`api/v1/post/create`, data, {
     headers: {
       withCredentials: true,
     },
@@ -135,7 +135,7 @@ export const useGetMyUserDataQ = (userId: string) => {
     ['myUser', userId],
     () => {
       return axios
-        .get(`/api/v1/user/find/${userId}`, {
+        .get(`api/v1/user/find/${userId}`, {
           headers: {
             withCredentials: true,
           },
@@ -147,7 +147,7 @@ export const useGetMyUserDataQ = (userId: string) => {
       staleTime: minutesToMs(200),
       retry: false,
 
-      onError: (err: string) => errorToast(err),
+      onError: (err: string) => errorToast('Could not fetch user data'),
     }
   );
 };
@@ -155,7 +155,7 @@ export const useGetMyUserDataQ = (userId: string) => {
 const followUser = async (data: IFollowIds, action: string) => {
   const { subjectId, userId } = data;
   const res = await axios.put(
-    `/api/v1/user/${action}/${subjectId}`,
+    `api/v1/user/${action}/${subjectId}`,
     { userId },
     {
       headers: {
@@ -197,7 +197,7 @@ export const useGetAllUsersQ = () => {
     'allUsers',
     () => {
       return axios
-        .get(`/api/v1/user/all/`, {
+        .get(`api/v1/user/all/`, {
           headers: {
             withCredentials: true,
           },
@@ -219,7 +219,7 @@ export const useGetUserByIdQ = (userId: string) => {
     ['user', userId],
     () => {
       return axios
-        .get(`/api/v1/user/find/${userId}`, {
+        .get(`api/v1/user/find/${userId}`, {
           headers: {
             withCredentials: true,
           },
