@@ -44,7 +44,7 @@ const Feed = () => {
   };
   return (
     <div style={{ flex: 5 }}>
-      <FeedContainer>
+      <FeedContainer className='flex flex-col justify-center items-center'>
         <UploadBar />
         {posts?.map?.((item) => (
           <Post

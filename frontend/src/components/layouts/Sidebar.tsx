@@ -58,7 +58,7 @@ const Sidebar = () => {
         <Divider></Divider>
         <FriendsList className=' mt-4 flex flex-col overflow-y-scroll'>
           <span className='text-xl font-semibold  mb-8 ml-4 '>
-            People I follow ({`${followers.length}`})
+            Followers ({`${followers.length}`})
           </span>
           {followers.length > 0 ? (
             followers!.map((follower) => (
@@ -89,7 +89,7 @@ const Sidebar = () => {
         </FriendsList>
         <FriendsList className=' mt-4 flex flex-col overflow-y-scroll'>
           <span className='text-xl font-semibold  mb-8 ml-4 '>
-            People I'm Following ({`${following.length}`})
+            Following ({`${following.length}`})
           </span>
           {!isLoading && following.length > 0 ? (
             following!.map((following) => (

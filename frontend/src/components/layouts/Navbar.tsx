@@ -126,6 +126,9 @@ const Navbar = () => {
           <Link to='/'>
             <span className='cursor-pointer'>Feed</span>
           </Link>
+          <Link to='/settings'>
+            <span className='cursor-pointer'>Settings</span>
+          </Link>
           <span className='cursor-pointer' onClick={logout}>
             Logout
           </span>

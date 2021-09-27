@@ -29,7 +29,7 @@ const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
   const { userData } = useUserContext();
 
   return (
-    <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-auto'>
+    <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-8'>
       <PostWrapper>
         <PostTop
           avatar={avatar}

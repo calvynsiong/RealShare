@@ -7,6 +7,7 @@ import { useUserContext } from '../../App';
 import { useCreatePostQ } from '../../queries/AllQueries';
 import { UPLOAD_IMG_URL } from '../../utils/constants';
 import { errorToast } from '../../utils/toasts';
+import UploadImg from './UploadImg';
 
 interface IButtonProps {
   invalid: boolean;
@@ -18,7 +19,7 @@ const UploadWrapper = styled.div`
   -webkit-backdrop-filter: blur(22px) saturate(107%);
   background-color: rgba(160, 182, 223, 0.19);
   border: 1px solid rgba(255, 255, 255, 0.125);
-  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+  box-shadow: 0px 0px 16px -4px rgba(0, 0, 0, 0.68);
   border: 1px solid rgba(255, 255, 255, 0.125);
 `;
 const UploadPhoto = styled.div`
@@ -50,8 +51,6 @@ const SingleOption = styled.div`
 `;
 const UploadButton = styled.button<IButtonProps>`
   border: none;
-  padding: 7px;
-  width: 75%;
   background-color: blue;
   opacity: ${(props) => (props.invalid ? '0.5' : '1')};
   font-weight: 500;
@@ -178,7 +177,7 @@ const UploadBar = () => {
     fileImage.append('file', img as File);
     fileImage.append('cloud_name', 'spedwagon');
     let processedImage: string = '';
-    console.log('Image', UPLOAD_IMG_URL, fileImage.entries());
+    // console.log('Image', UPLOAD_IMG_URL, fileImage.entries());
     await fetch(UPLOAD_IMG_URL, {
       method: 'post',
       body: fileImage,
@@ -204,6 +203,9 @@ const UploadBar = () => {
       await uploadPost(processedData);
     }
   };
+  const deleteImg = () => {
+    setUploadInfo({ ...uploadInfo, img: null });
+  };
 
   // ! Props
   const tagProps = {
@@ -225,7 +227,7 @@ const UploadBar = () => {
 
   // console.log(img, 'IMAGE');
   return (
-    <UploadContainer className='flex  w-full mx-auto mt-20 md:w-3/4'>
+    <UploadContainer className='flex w-5/6 mt-24'>
       <UploadWrapper className='h-full flex-1 mx-8 my-4 p-4 flex flex-col'>
         <UploadPhoto className='w-full flex justify-center items-center gap-4 '>
           <ProfPic
@@ -244,9 +246,12 @@ const UploadBar = () => {
           ></InputText>
         </UploadPhoto>
         <Divider></Divider>
-        <div>
+        {img && (
+          <UploadImg img={URL.createObjectURL(img)} deleteImg={deleteImg} />
+        )}
+        <div className='flex flex-wrap px-3'>
           <label htmlFor='file'>
-            <UploadOptions className='flex justify-center items-start flex-wrap'>
+            <UploadOptions className='flex justify-center items-start'>
               <SingleOption className='flex items-center cursor-pointer mr-4'>
                 <input
                   type='file'
@@ -265,7 +270,7 @@ const UploadBar = () => {
                 ></input>
                 <PermMedia htmlColor='blue' />
 
-                <span>Upload a picture</span>
+                <span className='text-lg font-semibold'>Upload a picture</span>
               </SingleOption>
             </UploadOptions>
           </label>
@@ -274,12 +279,9 @@ const UploadBar = () => {
               className='flex justify-center items-start flex-wrap'
               onClick={option.onClick}
             >
-              <SingleOption
-                className='flex items-center cursor-pointer mr-4'
-                key={index}
-              >
+              <SingleOption className=' cursor-pointer mr-4' key={index}>
                 {option.icon}
-                <span>{option.label}</span>
+                <span className='text-lg font-semibold'>{option.label}</span>
               </SingleOption>
             </UploadOptions>
           ))}
@@ -301,7 +303,7 @@ const UploadBar = () => {
         <UploadButton
           disabled={isUploadDisabled}
           invalid={isUploadDisabled}
-          className='mx-auto'
+          className='mx-auto rounded-full p-4 px-8'
           onClick={handleUploadPost}
         >
           Upload

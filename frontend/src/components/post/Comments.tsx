@@ -31,7 +31,7 @@ const CreateComment = ({
         <input
           aria-label='Comment'
           autoComplete='on'
-          className='text-sm text-gray-base w-full mr-3 py-5 px-4'
+          className=' text-gray-base w-full mr-3 py-5 px-4'
           type='text'
           name='add-comment'
           placeholder='Comment...'
@@ -41,7 +41,7 @@ const CreateComment = ({
           }}
         />
         <button
-          className={`text-sm font-bold text-blue-medium px-8  flex-1  ${
+          className={` font-bold text-blue-medium px-8  flex-1  ${
             !comment.text && 'opacity-25'
           }`}
           type='button'
@@ -82,21 +82,21 @@ const Comments = ({
       <CommentsContainer className='px-6 my-2'>
         <div className=' flex mb-1'>
           <Link to={`/profile/${userId}`}>
-            <span className='font-bold text-lg mr-4'>{username}</span>
+            <span className='font-bold md:text-xl mr-4'>{username}</span>
           </Link>
-          <span>{caption}</span>
+          <span className=' md:text-lg'>{caption}</span>
         </div>
         {comments.slice(0, commentLimit).map((com, index) => {
           return (
-            com && (
+            com?.userId && (
               <Fragment key={index}>
                 <div className=' flex mb-1'>
-                  <Link to={`/profile/${com?.userId?._id}`}>
-                    <span className='font-semibold mr-4'>
+                  <Link to={`/profile/${com.userId._id}`}>
+                    <span className='font-semibold mr-4  md:text-lg'>
                       {com?.userId?.username}
                     </span>
                   </Link>
-                  <span>{com.text}</span>
+                  <span className=' md:text-lg'>{com.text}</span>
                 </div>
               </Fragment>
             )
@@ -104,21 +104,21 @@ const Comments = ({
         })}
         <div className='flex flex-wrap justify-around px-4 my-4'>
           <SeeMore
-            className='text-gray-base mb-1 cursor-pointer'
+            className='text-gray-base mb-1 cursor-pointer p-4'
             onClick={() => setCommentLimit((pre) => pre + 3)}
           >
             View More Comments
           </SeeMore>
           {commentLimit > 3 && (
             <Hide
-              className='text-gray-base mb-1 cursor-pointer'
+              className='text-gray-base mb-1 cursor-pointer p-4'
               onClick={() => setCommentLimit(3)}
             >
               Hide Comments
             </Hide>
           )}
         </div>
-        <p className='text-gray-base text-sm mt-2'>Posted 5 mins Ago</p>
+        <p className='text-gray-base  mt-2'>Posted 5 mins Ago</p>
       </CommentsContainer>
     </>
   );
