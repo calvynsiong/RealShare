@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { useProfileContext } from '../../pages/profile/Profile';
 import FriendsList from './FriendsList';
 import { useUserContext } from '../../App';
+import useModal from './../../hooks/useModal';
+import UpdateProfilePicModal from './UpdateProfilePicModal';
+import useUploadImg from './../../hooks/useUploadImg';
 
 const PhotoSection = styled.div``;
 const InfoSection = styled.div``;
@@ -11,6 +14,7 @@ const Statistic = styled.div``;
 
 const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   const { userData } = useUserContext();
+  const { modalStatus, open, close } = useModal();
   const {
     fetchedUser,
     showFriends,
@@ -28,78 +32,100 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   };
 
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
+  const {
+    handleProcessImg,
+    img,
+    deleteImg,
+    setImg,
+    processedImg,
+    setProcessedImg,
+  } = useUploadImg(avatar);
+
+  const updateProfilePicProps = {
+    modalStatus,
+    close,
+    processedImg,
+    deleteImg,
+    setImg,
+  };
 
   const isAnotherProfile = userData?._id !== _id;
 
   return (
-    <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>
-      <PhotoSection className='container flex flex-col justify-center items-center col-span-1'>
-        {true ? (
-          <>
-            <img
-              className='rounded-full h-40 w-40 flex'
-              alt={`${username}'s profile`}
-              src={avatar ?? defaultImg}
-              onError={(e) => {
-                const target = e.target as typeof e.target & {
-                  src: string;
-                };
-                target.src = defaultImg!;
-              }}
-            />
-            <button className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'>
-              Update Profile Pic
-            </button>
-          </>
-        ) : (
-          <Skeleton circle height={150} width={150} count={1} />
-        )}
-      </PhotoSection>
-      <InfoSection className='flex items-center justify-start flex-col col-span-2'>
-        <NameSection className='container flex gap-4 marker:items-center mb-4 '>
-          <p className='text-2xl mb-0 mr-4'>{username}</p>
-        </NameSection>
-        <Statistic className='container flex mt-4'>
-          {false ? (
-            <Skeleton count={1} width={677} height={24} />
-          ) : (
+    <>
+      {modalStatus && <UpdateProfilePicModal {...updateProfilePicProps} />}
+      <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>
+        <PhotoSection className='container flex flex-col justify-center items-center col-span-1'>
+          {true ? (
             <>
-              <p className='mr-10 p-2 '>
-                <span className='font-bold'>{posts?.length ?? 0}</span> photos
-              </p>
-
-              <p
-                className='mr-10 p-2  rounded border cursor-pointer'
-                onClick={() => openFriends('followers')!}
+              <img
+                className='rounded-full h-40 w-40 flex'
+                alt={`${username}'s profile`}
+                src={processedImg ?? defaultImg}
+                onError={(e) => {
+                  const target = e.target as typeof e.target & {
+                    src: string;
+                  };
+                  target.src = defaultImg!;
+                }}
+              />
+              <button
+                className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'
+                onClick={open}
               >
-                <span className='font-bold'>{followers!?.length}</span>
-                {` `}
-                {followers!?.length > 1 ? `followers` : `follower`}
-              </p>
-              <p
-                className='mr-10 p-2 rounded border cursor-pointer'
-                onClick={() => openFriends('following')!}
-              >
-                <span className='font-bold'>{following!?.length}</span>{' '}
-                following
-              </p>
+                Update Profile Pic
+              </button>
             </>
+          ) : (
+            <Skeleton circle height={150} width={150} count={1} />
           )}
-          <FriendsList {...listProps}></FriendsList>
-        </Statistic>
-        <div className='container mt-4'>
-          {isAnotherProfile ? (
-            <button
-              className='bg-blue-600 text-white font-bold text-sm rounded w-20 h-8'
-              type='button'
-              onClick={() => handleFollowOrUnfollowUser(_id, userData!._id)}
-            >
-              {isFollowing ? 'Unfollow' : 'Follow'}
-            </button>
-          ) : null}
-        </div>
-      </InfoSection>
-    </section>
+        </PhotoSection>
+        <InfoSection className='flex items-center justify-start flex-col col-span-2'>
+          <NameSection className='container flex gap-4 marker:items-center mb-4 '>
+            <p className='text-2xl mb-0 mr-4'>{username}</p>
+          </NameSection>
+          <Statistic className='container flex mt-4'>
+            {false ? (
+              <Skeleton count={1} width={677} height={24} />
+            ) : (
+              <>
+                <p className='mr-10 p-2 '>
+                  <span className='font-bold'>{posts?.length ?? 0}</span> photos
+                </p>
+
+                <p
+                  className='mr-10 p-2  rounded border cursor-pointer'
+                  onClick={() => openFriends('followers')!}
+                >
+                  <span className='font-bold'>{followers!?.length}</span>
+                  {` `}
+                  {followers!?.length > 1 ? `followers` : `follower`}
+                </p>
+                <p
+                  className='mr-10 p-2 rounded border cursor-pointer'
+                  onClick={() => openFriends('following')!}
+                >
+                  <span className='font-bold'>{following!?.length}</span>{' '}
+                  following
+                </p>
+              </>
+            )}
+            <FriendsList {...listProps}></FriendsList>
+          </Statistic>
+          <div className='container mt-4'>
+            {isAnotherProfile ? (
+              <button
+                className='bg-blue-600 text-white font-bold text-sm rounded w-20 h-8'
+                type='button'
+                onClick={() => handleFollowOrUnfollowUser(_id, userData!._id)}
+              >
+                {isFollowing ? 'Unfollow' : 'Follow'}
+              </button>
+            ) : null}
+          </div>
+        </InfoSection>
+      </section>
+    </>
   );
 };
 

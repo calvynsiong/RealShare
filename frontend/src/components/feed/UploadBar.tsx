@@ -170,7 +170,6 @@ const UploadBar = () => {
   };
 
   const handleUploadPost = async () => {
-    console.log('submit', uploadInfo);
     const { userId, desc, img, location, tags } = uploadInfo;
     const fileImage = new FormData();
     fileImage.append('upload_preset', 'realshare');
@@ -184,11 +183,9 @@ const UploadBar = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         processedImage = data.secure_url;
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         errorToast('Image was not processed!');
       });
 
@@ -247,7 +244,7 @@ const UploadBar = () => {
         </UploadPhoto>
         <Divider></Divider>
         {img && (
-          <UploadImg img={URL.createObjectURL(img)} deleteImg={deleteImg} />
+          <UploadImg img={URL.createObjectURL(img)!} deleteImg={deleteImg} />
         )}
         <div className='flex flex-wrap px-3'>
           <label htmlFor='file'>

@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { useProfileContext } from '../../pages/profile/Profile';
-import { useUserContext } from '../../App';
 
 interface Props {
   showFriends: boolean;
@@ -27,7 +26,7 @@ const FriendsList = ({ showFriends, closeFriends, datatype }: Props) => {
   const { following, followers } = fetchedUser!;
   const friends = datatype === 'following' ? following : followers;
   return (
-    <section className='mt-14 top-4 outline-[red]'>
+    <section className='mt-14 top-4'>
       <Modal
         style={customStyles}
         className='max-w-3/4  fixed bg-white w-3/4 shadow-xl p-4 z-50 ease-linear overflow-y-auto outline-none '
