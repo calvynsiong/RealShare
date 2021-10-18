@@ -121,8 +121,8 @@ const Navbar = () => {
           {searchResults}
         </SearchDropdown>
       </CenterBar>
-      <RightBar className='flex z-50 items-center justify-end gap-4 mx-8'>
-        <NavLinks className='hidden sm:flex gap-8 font-semibold text-lg'>
+      <RightBar className='flex z-50 items-center justify-end gap-4 ml-8'>
+        <NavLinks className='flex gap-8 font-semibold text-lg'>
           <Link to='/'>
             <span className='cursor-pointer'>Feed</span>
           </Link>
@@ -135,7 +135,7 @@ const Navbar = () => {
         </NavLinks>
         <Link to={`/profile/${userData?._id}`}>
           <img
-            className='h-8 rounded-full cursor-pointer'
+            className='h-14 w-14 rounded-full cursor-pointer'
             src='https://avatars.dicebear.com/api/gridy/:seed.svg'
             alt='avatar'
           ></img>
