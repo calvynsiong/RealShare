@@ -33,20 +33,24 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
 
   return (
     <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>
-      <PhotoSection className='container flex justify-center items-center col-span-1'>
+      <PhotoSection className='container flex flex-col justify-center items-center col-span-1'>
         {true ? (
-          // eslint-disable-next-line jsx-a11y/img-redundant-alt
-          <img
-            className='rounded-full h-40 w-40 flex'
-            alt={`${username} profile picture`}
-            src={avatar ?? defaultImg}
-            onError={(e) => {
-              const target = e.target as typeof e.target & {
-                src: string;
-              };
-              target.src = defaultImg!;
-            }}
-          />
+          <>
+            <img
+              className='rounded-full h-40 w-40 flex'
+              alt={`${username}'s profile`}
+              src={avatar ?? defaultImg}
+              onError={(e) => {
+                const target = e.target as typeof e.target & {
+                  src: string;
+                };
+                target.src = defaultImg!;
+              }}
+            />
+            <button className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'>
+              Update Profile Pic
+            </button>
+          </>
         ) : (
           <Skeleton circle height={150} width={150} count={1} />
         )}

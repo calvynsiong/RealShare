@@ -23,10 +23,32 @@ interface Props {
 }
 
 const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
-  const { _id, img, location, tags, userId, likes, comments, desc } = post!;
+  const {
+    _id,
+    img,
+    location,
+    tags,
+    userId,
+    likes,
+    comments,
+    desc,
+    createdAt,
+    updatedAt,
+  } = post!;
 
   const { avatar, _id: user, username } = userId;
   const { userData } = useUserContext();
+
+  const CommentsProp = {
+    caption: desc,
+    handlePostComment: handlePostComment,
+    comments: comments!,
+    username,
+    userId: userData!._id!,
+    postId: _id,
+    createdAt,
+    updatedAt,
+  };
 
   return (
     <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-8'>
@@ -47,14 +69,7 @@ const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
           mainUserId={userData!._id!}
           username={username}
         ></PostCenter>
-        <Comments
-          caption={desc}
-          handlePostComment={handlePostComment}
-          comments={comments!}
-          username={username}
-          userId={userData!._id!}
-          postId={_id}
-        ></Comments>
+        <Comments {...CommentsProp}></Comments>
       </PostWrapper>
     </PostContainer>
   );

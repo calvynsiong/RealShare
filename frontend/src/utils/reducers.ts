@@ -12,7 +12,8 @@ export interface ICommentInfo {
 export interface IPost {
   schemaType: number;
   _id: string;
-  createdAt: Date;
+  createdAt: string;
+  updatedAt: string;
   img: string;
   desc: string;
   userId: {

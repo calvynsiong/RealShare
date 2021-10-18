@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const ErrorPage = () => {
   return (
-    <section className='w-full flex flex-col sticky justify-center items-center mt-[5em] text-center '>
+    <section className='w-full flex flex-col sticky justify-center items-center mt-32 text-center '>
       <h2 className='font-bold text-[1.5em]'>
         Sorry, this page is not available
       </h2>

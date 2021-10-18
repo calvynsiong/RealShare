@@ -121,12 +121,12 @@ const Navbar = () => {
           {searchResults}
         </SearchDropdown>
       </CenterBar>
-      <RightBar className='flex z-50 items-center justify-end gap-4 ml-8'>
+      <RightBar className='flex z-50 items-center justify-end gap-4 mx-8'>
         <NavLinks className='flex gap-8 font-semibold text-lg'>
           <Link to='/'>
             <span className='cursor-pointer'>Feed</span>
           </Link>
-          <Link to='/settings'>
+          <Link to={`/settings/${userData?._id}`}>
             <span className='cursor-pointer'>Settings</span>
           </Link>
           <span className='cursor-pointer' onClick={logout}>

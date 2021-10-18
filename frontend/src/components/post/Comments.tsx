@@ -4,6 +4,7 @@ import styled from 'styled-components';
 // utils
 import { ICommentInfo } from '../../utils/reducers';
 import { IComment } from './Post';
+import useDateDifference from './../../hooks/useDateDifference';
 
 const AddCommentContainer = styled.form``;
 
@@ -14,6 +15,8 @@ interface Props {
   postId: string;
   caption: string;
   username: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const CreateComment = ({
@@ -70,8 +73,11 @@ const Comments = ({
   postId,
   caption,
   username,
+  createdAt,
+  updatedAt,
 }: Props) => {
   const [commentLimit, setCommentLimit] = useState<number>(5);
+  const time = useDateDifference(new Date(createdAt), new Date());
   return (
     <>
       <CreateComment
@@ -118,7 +124,7 @@ const Comments = ({
             </Hide>
           )}
         </div>
-        <p className='text-gray-base  mt-2'>Posted 5 mins Ago</p>
+        <p className='text-gray-base  mt-2'>Posted {time} Ago</p>
       </CommentsContainer>
     </>
   );
