@@ -6,6 +6,8 @@ import { useUserContext } from '../../App';
 import useModal from './../../hooks/useModal';
 import UpdateProfilePicModal from './UpdateProfilePicModal';
 import useUploadImg from './../../hooks/useUploadImg';
+import { useCallback } from 'react';
+import { useUpdateProfilePicQuery } from '../../queries/AllQueries';
 
 const PhotoSection = styled.div``;
 const InfoSection = styled.div``;
@@ -30,6 +32,7 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
     showFriends: showFriends!,
     datatype,
   };
+  const { mutate: updateProfilePicture } = useUpdateProfilePicQuery();
 
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
   const {
@@ -41,43 +44,55 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
     setProcessedImg,
   } = useUploadImg(avatar);
 
+  const isAnotherProfile = userData?._id !== _id;
+
+  const handleUpdateProfilePic = useCallback(
+    async (img: File | null) => {
+      if (!File) return;
+      const uploadImg = await handleProcessImg(img as File);
+      await updateProfilePicture({
+        avatar: uploadImg!,
+        userId: userData!._id,
+      });
+    },
+    [handleProcessImg, userData, updateProfilePicture]
+  );
   const updateProfilePicProps = {
     modalStatus,
     close,
-    processedImg,
+    // If there is a live img, then display it
+    processedImg: img !== null ? URL.createObjectURL(img) : processedImg,
     deleteImg,
     setImg,
+    img,
+    handleUpdateProfilePic,
   };
-
-  const isAnotherProfile = userData?._id !== _id;
 
   return (
     <>
-      {modalStatus && <UpdateProfilePicModal {...updateProfilePicProps} />}
+      {modalStatus && userData!._id === _id && (
+        <UpdateProfilePicModal {...updateProfilePicProps} />
+      )}
       <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>
         <PhotoSection className='container flex flex-col justify-center items-center col-span-1'>
-          {true ? (
-            <>
-              <img
-                className='rounded-full h-40 w-40 flex'
-                alt={`${username}'s profile`}
-                src={processedImg ?? defaultImg}
-                onError={(e) => {
-                  const target = e.target as typeof e.target & {
-                    src: string;
-                  };
-                  target.src = defaultImg!;
-                }}
-              />
-              <button
-                className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'
-                onClick={open}
-              >
-                Update Profile Pic
-              </button>
-            </>
-          ) : (
-            <Skeleton circle height={150} width={150} count={1} />
+          <img
+            className='rounded-full h-40 w-40 flex'
+            alt={`${username}'s profile`}
+            src={avatar ?? defaultImg}
+            onError={(e) => {
+              const target = e.target as typeof e.target & {
+                src: string;
+              };
+              target.src = defaultImg!;
+            }}
+          />
+          {userData!._id === _id && (
+            <button
+              className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'
+              onClick={open}
+            >
+              Update Profile Pic
+            </button>
           )}
         </PhotoSection>
         <InfoSection className='flex items-center justify-start flex-col col-span-2'>

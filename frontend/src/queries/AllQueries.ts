@@ -100,6 +100,10 @@ type PostData = Pick<IPost, 'desc' | 'tags' | 'location'> & {
   userId: string;
   img: string;
 };
+type ProfilePicData = {
+  userId: string;
+  avatar: string;
+};
 
 const createPost = async (
   data: PostData
@@ -123,6 +127,38 @@ export const useCreatePostQ = () => {
     },
     onError: (err: Error) => {
       console.log(err);
+      errorToast('Failed to upload post');
+    },
+  });
+};
+
+const updateProfilePic = async (
+  data: ProfilePicData
+): Promise<void | { res: AxiosResponse<any>; userId: string }> => {
+  const { userId, avatar } = data;
+
+  const res = await axios.put(
+    `api/v1/user/update/${userId}`,
+    { avatar, userId },
+    {
+      headers: {
+        withCredentials: true,
+      },
+    }
+  );
+  console.log(res.data);
+  return { res, userId };
+};
+
+export const useUpdateProfilePicQuery = () => {
+  const QueryClient = useQueryClient();
+  return useMutation((input: ProfilePicData) => updateProfilePic(input), {
+    onSuccess: async (data) => {
+      successToast('Profile Picture Updated');
+      await QueryClient.invalidateQueries(['user', data!.userId]);
+    },
+    onError: (err: Error) => {
+      errorToast(err.message);
       errorToast('Failed to upload post');
     },
   });

@@ -53,8 +53,6 @@ interface IUserContext {
   allUsers: IUser[] | null;
   setUserData: React.Dispatch<React.SetStateAction<IUser | null>>;
   setAllUsers: React.Dispatch<React.SetStateAction<IUser[] | null>>;
-  // postState: IPostState;
-  // postDispatch: React.Dispatch<PostActions>;
 }
 
 //  * Context

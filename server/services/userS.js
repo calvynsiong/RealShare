@@ -18,7 +18,6 @@ const cleanUpEmptyFollowers = async (userId) => {
   const allIds = users.map((user) => user._id.toString());
   // Obtains users + following/followers
   const mainUser = await UserM.findById(userId);
-  console.log(userId, mainUser);
   const followers = mainUser?.followers.map?.((entry) => entry.user.toString());
   const following = mainUser?.following.map?.((entry) => entry.user.toString());
   // Removes follower id if none-existent in db
@@ -36,16 +35,29 @@ const cleanUpEmptyFollowers = async (userId) => {
 };
 
 exports.updateUser_DB = async (id, newData) => {
-  const updatedUser = await UserM.findOneAndUpdate({ _id: id }, newData, {
-    new: true,
-    runValidators: true,
-  })
-    .exec()
-    .catch((err) => {
-      throw err;
-    });
-
-  return updatedUser;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const updatedUser = await UserM.findOneAndUpdate({ _id: id }, newData, {
+      session,
+      runValidators: true,
+      new: true,
+    })
+      .exec()
+      .catch((err) => {
+        throw err;
+      });
+    await updatedUser.save({ session });
+    await session.commitTransaction();
+    session.endSession();
+    console.log(updatedUser.avatar, 'AVATAR');
+    return updatedUser;
+  } catch (error) {
+    await session.abortTransaction();
+    throw new ErrorResponse('Error in updating user', 500);
+  } finally {
+    session.endSession();
+  }
 };
 exports.deleteUser_DB = async (id) => {
   const session = await mongoose.startSession();
@@ -64,7 +76,6 @@ exports.deleteUser_DB = async (id) => {
     return deletedUser;
   } catch (error) {
     await session.abortTransaction();
-    console.log(error);
     throw error;
   } finally {
     session.endSession();
@@ -91,7 +102,6 @@ exports.getUser_DB = async (id) => {
 };
 
 exports.followUserAndUpdate_DB = async (userId, followerId) => {
-  console.log(userId, '<-Main Follower->', followerId);
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -117,22 +127,15 @@ exports.followUserAndUpdate_DB = async (userId, followerId) => {
 
     await session.commitTransaction();
     session.endSession();
-    console.log(
-      updatedUser.following,
-      '<-Updated User->',
-      updatedFollowedUser.followers
-    );
     return [updatedUser, updatedFollowedUser];
   } catch (error) {
     await session.abortTransaction();
-    console.log(error);
     throw new ErrorResponse('Error in following user', 500);
   } finally {
     session.endSession();
   }
 };
 exports.UnfollowUserAndUpdate_DB = async (userId, followerId) => {
-  console.log(userId, '<-Main Follower->', followerId);
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -158,15 +161,9 @@ exports.UnfollowUserAndUpdate_DB = async (userId, followerId) => {
 
     await session.commitTransaction();
     session.endSession();
-    console.log(
-      updatedUser.following,
-      '<-Updated User->',
-      updatedFollowedUser.followers
-    );
     return [updatedUser, updatedFollowedUser];
   } catch (error) {
     await session.abortTransaction();
-    console.log(error);
     throw new ErrorResponse('Error in following user', 500);
   } finally {
     session.endSession();

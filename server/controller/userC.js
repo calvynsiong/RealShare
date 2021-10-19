@@ -1,6 +1,6 @@
 const responseHandler = require('../utils/responseHandler');
 const asyncHandler = require('../utils/asyncHandler');
-const { hashPassword } = require('../utils/requestCheck');
+const { hashPassword, sanitizer } = require('../utils/requestCheck');
 // services
 const {
   updateUser_DB,
@@ -15,30 +15,29 @@ const {
 // *Desc: Update user
 exports.updateUser = asyncHandler(async (req, res) => {
   const handleUpdateUser = async (req, res) => {
+    // Saniitize body
+    sanitizer(['password', 'avatar', 'username', 'userId'], req.body);
     // Checks if password is provided
-    if (req.body.password) {
-      try {
+    try {
+      if (req.body.password) {
         req.body.password = await hashPassword(req.body.password);
-        const updatedUser = await updateUser_DB(req.params.id, req.body);
-        responseHandler(
-          {
-            statusCode: 200,
-            payload: { updatedUser },
-            msg: 'User updated',
-          },
-          res
-        );
-      } catch (err) {
-        responseHandler({ statusCode: 500, msg: err.toString() }, res);
       }
-    } else {
-      responseHandler({ statusCode: 409, msg: 'No password provided' }, res);
+      const updatedUser = await updateUser_DB(req.params.id, req.body);
+      responseHandler(
+        {
+          statusCode: 200,
+          payload: { updatedUser },
+          msg: 'User updated',
+        },
+        res
+      );
+    } catch (err) {
+      responseHandler({ statusCode: 500, msg: err.toString() }, res);
     }
   };
 
   // Checks same user OR admin
   if (req.body.userId === req.params.id || req.body.isAdmin) {
-    console.log('Hello world');
     await handleUpdateUser(req, res);
   } else {
     responseHandler(
@@ -88,8 +87,6 @@ exports.getUser = asyncHandler(async (req, res) => {
       res
     );
   } catch (err) {
-    console.log(err);
-    console.log('uh');
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
@@ -126,7 +123,6 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
   }
 
   const user = await getUser_DB(userId);
-  console.log(user);
   const peopleImFollowing = user.following.map((entry) => entry.id);
   // ! Only if trying to follow and checks if main user is already following
   if (action === 'follow' && peopleImFollowing.includes(id)) {
@@ -155,7 +151,6 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
     return;
   }
   // ! Only if trying to unfollow and checks if not following the person
-  console.log('FOLLOWERS?', !peopleImFollowing.includes(id));
   if (!peopleImFollowing.includes(id)) {
     responseHandler(
       { statusCode: 409, msg: `You don't follow user ${id}!` },
@@ -184,10 +179,8 @@ const handleUserFollowAndUnfollow = async (req, res, action) => {
 // *Desc: Follow others
 exports.followUser = asyncHandler(async (req, res) => {
   try {
-    console.log('FOLLOW commencing');
     await handleUserFollowAndUnfollow(req, res, 'follow');
   } catch (err) {
-    console.log(err);
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
@@ -197,7 +190,6 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
   try {
     await handleUserFollowAndUnfollow(req, res, 'unfollow');
   } catch (err) {
-    console.log(err);
     responseHandler({ statusCode: 500, msg: err.toString() }, res);
   }
 });
