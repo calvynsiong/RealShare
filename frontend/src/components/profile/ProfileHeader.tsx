@@ -32,7 +32,8 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
     showFriends: showFriends!,
     datatype,
   };
-  const { mutate: updateProfilePicture } = useUpdateProfilePicQuery();
+  const { mutate: updateProfilePicture, isLoading } =
+    useUpdateProfilePicQuery();
 
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
   const { handleProcessImg, img, deleteImg, setImg, processedImg } =
@@ -60,6 +61,7 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
     deleteImg,
     setImg,
     img,
+    isLoading,
     handleUpdateProfilePic,
   };
 

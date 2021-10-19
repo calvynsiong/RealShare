@@ -51,7 +51,7 @@ const Post = ({ post, handleLikeOrDislike, handlePostComment }: Props) => {
   };
 
   return (
-    <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-8'>
+    <PostContainer className='rounded col-span-4 border bg-white border-gray-primary m-12 mx-auto'>
       <PostWrapper>
         <PostTop
           avatar={avatar}

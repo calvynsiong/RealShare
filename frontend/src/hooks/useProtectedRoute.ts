@@ -16,7 +16,7 @@ const useProtectedRoute = (
   // const [user, setUser] = useState<string | null>(null);
   const myData = useMemo(
     () => QueryClient.getQueryData(['user', userData?._id]),
-    [userData?._id]
+    [userData?._id, QueryClient]
   );
   // debugger;
   useEffect(() => {
@@ -51,6 +51,7 @@ const useProtectedRoute = (
 
       history.push('/login');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myData]);
   return [token, loaded];
 };

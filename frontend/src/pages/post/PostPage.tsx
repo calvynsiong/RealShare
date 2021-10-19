@@ -41,7 +41,7 @@ const SinglePost = () => {
 
   return (
     <MainLayout>
-      <section className='container mt-24'>
+      <section className='container mt-24 mx-auto'>
         {post && token && loaded ? (
           <Post
             post={post!}

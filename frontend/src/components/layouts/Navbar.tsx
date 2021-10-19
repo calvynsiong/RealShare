@@ -7,6 +7,8 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState, ReactNode } from 'react';
 import axios from 'axios';
+import useModal from './../../hooks/useModal';
+import SettingsModal from '../settings/SettingsModal';
 
 const Logo = styled.div`
   flex: 2;
@@ -42,6 +44,14 @@ const NavLinks = styled.div``;
 const Navbar = () => {
   const history = useHistory();
   const { setUserData, userData, allUsers, setAllUsers } = useUserContext()!;
+
+  const { modalStatus, close, open } = useModal();
+
+  const settingModalProps = {
+    modalStatus,
+    close,
+    open,
+  };
 
   const fetchUsers = useCallback(async () => {
     const res = await axios.get('/api/v1/user/all');
@@ -126,9 +136,9 @@ const Navbar = () => {
           <Link to='/'>
             <span className='cursor-pointer'>Feed</span>
           </Link>
-          <Link to={`/settings/${userData?._id}`}>
-            <span className='cursor-pointer'>Settings</span>
-          </Link>
+          <span onClick={open} className='cursor-pointer'>
+            Settings
+          </span>
           <span className='cursor-pointer' onClick={logout}>
             Logout
           </span>
@@ -141,6 +151,7 @@ const Navbar = () => {
           ></img>
         </Link>
       </RightBar>
+      {modalStatus && <SettingsModal {...settingModalProps} />}
     </Section>
   ) : (
     <></>

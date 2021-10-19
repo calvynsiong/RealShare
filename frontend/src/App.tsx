@@ -24,7 +24,7 @@ import Register from './pages/register/Register';
 import Login from './pages/login/LoginPage';
 import SinglePost from './pages/post/PostPage';
 import ErrorPage from './pages/ErrorPage';
-import Settings from './pages/settings/Settings';
+import Settings from './components/settings/SettingsModal';
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -97,9 +97,6 @@ function App() {
             </Route>
             <Route exact path='/post/:pid'>
               <SinglePost />
-            </Route>
-            <Route exact path='/settings/:pid'>
-              <Settings />
             </Route>
             <Route path='/404' component={ErrorPage} />
             <Redirect to='/404' />

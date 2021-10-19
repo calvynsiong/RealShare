@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import UploadImg from './../feed/UploadImg';
 import styled from 'styled-components';
 import { PermMedia } from '@material-ui/icons';
+import DefaultLoader from '../loader/Loader';
 
 interface uploadImgProps {
   processedImg: string | null;
@@ -13,6 +14,7 @@ interface updateProfilePicProps extends uploadImgProps {
   close: () => void;
   setImg: React.Dispatch<React.SetStateAction<File | null>>;
   handleUpdateProfilePic: (img: File | null) => Promise<void>;
+  isLoading: boolean;
   img: File | null;
 }
 
@@ -27,6 +29,7 @@ const UpdateProfilePicModal = ({
   processedImg,
   deleteImg,
   setImg,
+  isLoading,
   img,
   handleUpdateProfilePic,
 }: updateProfilePicProps) => {
@@ -61,7 +64,11 @@ const UpdateProfilePicModal = ({
         contentLabel="Friend's List"
         ariaHideApp={false}
       >
-        <UploadImg {...updateProfPicProps}></UploadImg>
+        {isLoading ? (
+          <DefaultLoader />
+        ) : (
+          <UploadImg {...updateProfPicProps}></UploadImg>
+        )}
         <label htmlFor='file'>
           <UploadOptions className='flex justify-around items-start'>
             <div className='flex gap-4 items-center cursor-pointer mr-4'>
