@@ -136,7 +136,7 @@ const Navbar = () => {
         <Link to={`/profile/${userData?._id}`}>
           <img
             className='h-14 w-14 rounded-full cursor-pointer'
-            src='https://avatars.dicebear.com/api/gridy/:seed.svg'
+            src={userData!.avatar}
             alt='avatar'
           ></img>
         </Link>

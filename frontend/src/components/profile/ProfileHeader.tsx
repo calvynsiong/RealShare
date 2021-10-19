@@ -2,7 +2,7 @@ import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 import { useProfileContext } from '../../pages/profile/Profile';
 import FriendsList from './FriendsList';
-import { useUserContext } from '../../App';
+import { IUser, useUserContext } from '../../App';
 import useModal from './../../hooks/useModal';
 import UpdateProfilePicModal from './UpdateProfilePicModal';
 import useUploadImg from './../../hooks/useUploadImg';
@@ -15,7 +15,7 @@ const NameSection = styled.div``;
 const Statistic = styled.div``;
 
 const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
-  const { userData } = useUserContext();
+  const { userData, setUserData } = useUserContext();
   const { modalStatus, open, close } = useModal();
   const {
     fetchedUser,
@@ -35,14 +35,8 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
   const { mutate: updateProfilePicture } = useUpdateProfilePicQuery();
 
   const { _id, username, avatar, followers, following } = fetchedUser ?? {};
-  const {
-    handleProcessImg,
-    img,
-    deleteImg,
-    setImg,
-    processedImg,
-    setProcessedImg,
-  } = useUploadImg(avatar);
+  const { handleProcessImg, img, deleteImg, setImg, processedImg } =
+    useUploadImg(avatar);
 
   const isAnotherProfile = userData?._id !== _id;
 
@@ -50,12 +44,13 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
     async (img: File | null) => {
       if (!File) return;
       const uploadImg = await handleProcessImg(img as File);
+      setUserData({ ...userData, avatar: uploadImg } as IUser);
       await updateProfilePicture({
         avatar: uploadImg!,
         userId: userData!._id,
       });
     },
-    [handleProcessImg, userData, updateProfilePicture]
+    [handleProcessImg, userData, updateProfilePicture, setUserData]
   );
   const updateProfilePicProps = {
     modalStatus,
@@ -75,17 +70,19 @@ const ProfileHeader = ({ defaultImg }: { defaultImg: string }) => {
       )}
       <section className='grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg mt-24'>
         <PhotoSection className='container flex flex-col justify-center items-center col-span-1'>
-          <img
-            className='rounded-full h-40 w-40 flex'
-            alt={`${username}'s profile`}
-            src={avatar ?? defaultImg}
-            onError={(e) => {
-              const target = e.target as typeof e.target & {
-                src: string;
-              };
-              target.src = defaultImg!;
-            }}
-          />
+          {
+            <img
+              className='rounded-full h-40 w-40 flex'
+              alt={`${username}'s profile`}
+              src={avatar ?? defaultImg}
+              onError={(e) => {
+                const target = e.target as typeof e.target & {
+                  src: string;
+                };
+                target.src = defaultImg!;
+              }}
+            />
+          }
           {userData!._id === _id && (
             <button
               className='bg-blue-600 text-white w-3/4 rounded h-8 font-bold mt-4 text-center flex justify-center items-center text-xs sm:text-base'

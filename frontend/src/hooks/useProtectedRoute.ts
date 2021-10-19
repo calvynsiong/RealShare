@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import setJWTinAxios from '../utils/setJWTinAxios';
 import { IUser } from '../App';
 import { useHistory } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 // import { useGetUserQ } from './../queries/authQ';
 
 const useProtectedRoute = (
@@ -9,12 +10,21 @@ const useProtectedRoute = (
   userData: IUser
 ): [string | null, boolean] => {
   const history = useHistory();
+  const QueryClient = useQueryClient();
   const [loaded, setLoaded] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   // const [user, setUser] = useState<string | null>(null);
+  const myData = useMemo(
+    () => QueryClient.getQueryData(['user', userData?._id]),
+    [userData?._id]
+  );
+  // debugger;
   useEffect(() => {
     if (window !== undefined && localStorage && setUserData) {
-      setUserData(JSON.parse(localStorage.getItem('user') as string));
+      setUserData(
+        (myData as IUser) ?? JSON.parse(localStorage.getItem('user') as string)
+      );
+      // setUserData(JSON.parse(localStorage.getItem('user') as string));
       if (!localStorage.token) {
         console.log('Booted!');
         history.push('/login');
@@ -41,7 +51,7 @@ const useProtectedRoute = (
 
       history.push('/login');
     }
-  }, []);
+  }, [myData]);
   return [token, loaded];
 };
 
